@@ -8,6 +8,6 @@ module cps406.sbl {
     requires org.kordamp.bootstrapfx.core;
     requires eu.hansolo.tilesfx;
 
-    opens cps406.sbl to javafx.fxml;
-    exports cps406.sbl;
+    opens com.cps406 to javafx.fxml;
+    exports com.cps406;
 }
