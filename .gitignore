@@ -46,6 +46,6 @@ out/
 # ===========================
 # Maven
 # ===========================
-/target/
+SBL/target/
 !.mvn/wrapper/maven-wrapper.jar
 .mvn/wrapper/maven-wrapper.properties
