@@ -1,5 +1,35 @@
 package com.cps406.controllers;
 
-public class DashboardController {
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.*;
+import javafx.stage.*;
+import javafx.event.*;
 
+import java.io.IOException;
+
+public class DashboardController {
+    private Stage stage;
+    private Scene scene;
+    private Parent root;
+
+    @FXML
+    public void goToSprint(ActionEvent event) throws IOException {
+        root = FXMLLoader.load(getClass().getResource("/com/cps406/Sprint.fxml"));
+        stage = (Stage)((Node)event.getSource()).getScene().getWindow();
+        scene = new Scene(root);
+        scene.getStylesheets().add(getClass().getResource("/com/cps406/styles.css").toExternalForm());
+        stage.setScene(scene);
+        stage.show();
+    }
+
+    @FXML
+    private void goToBacklog(ActionEvent event) throws IOException {
+        root = FXMLLoader.load(getClass().getResource("/com/cps406/Backlog.fxml"));
+        stage = (Stage)((Node)event.getSource()).getScene().getWindow();
+        scene = new Scene(root);
+        scene.getStylesheets().add(getClass().getResource("/com/cps406/styles.css").toExternalForm());
+        stage.setScene(scene);
+        stage.show();
+    }
 }

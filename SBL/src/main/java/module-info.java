@@ -9,5 +9,6 @@ module cps406.sbl {
     requires eu.hansolo.tilesfx;
 
     opens com.cps406 to javafx.fxml;
+    opens com.cps406.controllers to javafx.fxml;
     exports com.cps406;
 }
