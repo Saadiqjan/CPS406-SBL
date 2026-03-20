@@ -9,6 +9,7 @@ public class Item {
     private float effort;
     private float risk;
     private int status;
+    private boolean completed;
 
     private ArrayList<Task> tasks;
 
@@ -22,6 +23,8 @@ public class Item {
 
         // Set up list of engineering tasks related to the item
         tasks = new ArrayList<Task>();
+
+        completed = false;
     }
 
     // Getters
@@ -43,9 +46,11 @@ public class Item {
         tasks.add(task);
     }
 
-    public Task removeTask(String taskName) {
-        Task task = null;
+    public void getTask(String taskname) {
 
-        return task;
+    }
+
+    public void removeTask(String taskName) {
+        tasks.removeIf(task -> task.getName().equals(taskName));
     }
 }
