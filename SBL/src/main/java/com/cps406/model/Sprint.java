@@ -1,6 +1,7 @@
 package com.cps406.model;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 
 public class Sprint {
     private static int totalSprints = 0;
@@ -9,6 +10,8 @@ public class Sprint {
     private LocalDate start;
     private LocalDate end;
     private int status;
+
+    private ArrayList<Item> items;
 
     public Sprint(int capacity, LocalDate end, int status) {
         totalSprints++;

@@ -7,6 +7,35 @@ public class ProductBacklog {
 
     public ProductBacklog()
     {
+        items = new ArrayList<Item>();
+    }
 
+    public ArrayList<Item> getBacklog() {
+        return items;
+    }
+
+    public boolean addItem(Item newItem) {
+        for (Item item : items) {
+            if (item.getName().equals(newItem.getName())) {
+                return false;
+            }
+        }
+
+        items.add(newItem);
+        return true;
+    }
+
+    public void removeItem(String itemName) {
+        items.removeIf(item -> item.getName().equals(itemName));
+    }
+
+    public Item getItem(String name) {
+        for (Item item : items) {
+            if (item.getName().equals(name)) {
+                return item;
+            }
+        }
+
+        return null;
     }
 }

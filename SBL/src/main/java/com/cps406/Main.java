@@ -14,6 +14,8 @@ public class Main extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
+        AppState appState = new AppState();
+
         Parent root = FXMLLoader.load(getClass().getResource("dashboard.fxml"));
         Scene scene = new Scene(root);
         scene.getStylesheets().add(getClass().getResource("styles.css").toExternalForm());
