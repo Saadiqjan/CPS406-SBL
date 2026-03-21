@@ -9,17 +9,17 @@ public class Sprint {
     private int capacity;
     private LocalDate start;
     private LocalDate end;
-    private int status;
+    private Status status;
 
     private ArrayList<Item> items;
 
-    public Sprint(int capacity, LocalDate end, int status) {
+    public Sprint(int capacity, LocalDate end) {
         totalSprints++;
         curSprint = totalSprints;
 
         this.capacity = capacity;
         start = LocalDate.now();
         this.end = end;
-        this.status = status;
+        this.status = Status.IN_PROGRESS;
     }
 }

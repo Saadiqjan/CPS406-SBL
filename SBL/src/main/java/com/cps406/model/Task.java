@@ -2,9 +2,12 @@ package com.cps406.model;
 
 public class Task {
     private String name;
+    private String description;
+    private Status status;
 
     public Task(String name) {
         this.name = name;
+        status = Status.TODO;
     }
 
     // Getters

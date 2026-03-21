@@ -8,18 +8,18 @@ public class Item {
     private int priority;
     private float effort;
     private float risk;
-    private int status;
+    private Status status;
     private boolean completed;
 
     private ArrayList<Task> tasks;
 
-    public Item(String name, String description, int priority, float effort, float risk, int status) {
+    public Item(String name, String description, int priority, float effort, float risk) {
         this.description = description;
         this.name = name;
         this.priority = priority;
         this.effort = effort;
         this.risk = risk;
-        this.status = status;
+        status = Status.TODO;
 
         // Set up list of engineering tasks related to the item
         tasks = new ArrayList<Task>();
@@ -33,14 +33,14 @@ public class Item {
     public int getPriotiy() { return priority; }
     public float getEffort() { return effort; }
     public float getRisk() { return risk; }
-    public int getStatus() { return status; }
+    public Status getStatus() { return status; }
     public ArrayList<Task> getTasks() { return tasks; }
 
     // Setters
     public void setPriority(int newPriority) { priority = newPriority; }
     public void setEffort(int newEffort) { effort = newEffort; }
     public void setRisk(int newRisk) { risk = newRisk; }
-    public void setStatus(int newStatus) { status = newStatus; };
+    public void setStatus(Status newStatus) { status = newStatus; };
 
     public void addTask(Task task) {
         tasks.add(task);
