@@ -22,4 +22,8 @@ public class Sprint {
         this.end = end;
         this.status = Status.IN_PROGRESS;
     }
+
+    public ArrayList<Item> getItems() {
+        return items;
+    }
 }
