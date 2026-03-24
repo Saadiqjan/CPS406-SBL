@@ -1,4 +1,4 @@
 package com.cps406.controllers;
 
-public class BacklogController {
+public class BacklogController extends BaseController {
 }

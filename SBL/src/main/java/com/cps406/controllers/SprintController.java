@@ -1,4 +1,4 @@
 package com.cps406.controllers;
 
-public class SprintController {
+public class SprintController extends BaseController {
 }

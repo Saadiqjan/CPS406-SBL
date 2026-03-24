@@ -1,5 +1,6 @@
 package com.cps406;
 
+import com.cps406.controllers.DashboardController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Group;
@@ -16,9 +17,15 @@ public class Main extends Application {
     public void start(Stage stage) throws IOException {
         AppState appState = new AppState();
 
-        Parent root = FXMLLoader.load(getClass().getResource("dashboard.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("dashboard.fxml"));
+
+        Parent root = loader.load();
         Scene scene = new Scene(root);
         scene.getStylesheets().add(getClass().getResource("styles.css").toExternalForm());
+
+        DashboardController dbc = loader.getController();
+        dbc.setAppState(appState);
+
         stage.setScene(scene);
         stage.show();
     }
