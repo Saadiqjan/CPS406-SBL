@@ -5,8 +5,7 @@ import java.util.ArrayList;
 public class ProductBacklog {
     private ArrayList<Item> items;
 
-    public ProductBacklog()
-    {
+    public ProductBacklog() {
         items = new ArrayList<Item>();
     }
 

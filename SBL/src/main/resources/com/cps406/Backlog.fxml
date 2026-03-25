@@ -17,7 +17,7 @@
    <bottom>
       <ButtonBar prefHeight="32.0" prefWidth="594.0" BorderPane.alignment="CENTER">
         <buttons>
-          <Button mnemonicParsing="false" text="Back" />
+          <Button mnemonicParsing="false" onAction="#goToDashboard" text="Back" />
         </buttons>
       </ButtonBar>
    </bottom>
