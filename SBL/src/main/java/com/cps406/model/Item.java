@@ -4,7 +4,8 @@ import java.util.ArrayList;
 
 public class Item {
     private String name;
-    private String description;
+    private String story;
+    private String task;
     private int priority;
     private float effort;
     private float risk;
@@ -13,9 +14,10 @@ public class Item {
 
     private ArrayList<Task> tasks;
 
-    public Item(String name, String description, int priority, float effort, float risk) {
-        this.description = description;
+    public Item(String name, String story, String task, int priority, float effort, float risk) {
         this.name = name;
+        this.story = story;
+        this.task = task;
         this.priority = priority;
         this.effort = effort;
         this.risk = risk;
@@ -29,8 +31,9 @@ public class Item {
 
     // Getters
     public String getName() { return name; }
-    public String getDescription() { return description; }
-    public int getPriotiy() { return priority; }
+    public String getStory() { return story; }
+    public String getTask() { return task; }
+    public int getPriority() { return priority; }
     public float getEffort() { return effort; }
     public float getRisk() { return risk; }
     public Status getStatus() { return status; }
