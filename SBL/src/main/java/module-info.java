@@ -10,5 +10,6 @@ module cps406.sbl {
 
     opens com.cps406 to javafx.fxml;
     opens com.cps406.controllers to javafx.fxml;
+    opens com.cps406.model to javafx.base;
     exports com.cps406;
 }
