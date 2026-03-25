@@ -11,12 +11,12 @@ public class SprintManager {
         curSprint = null;
     }
 
-    public Sprint getCurSprint () {
+    public Sprint getCurSprint() {
         return curSprint;
     }
 
-    public boolean activeSprint() {
-        if (curSprint ==  null)
+    public boolean isActiveSprint() {
+        if (curSprint == null)
             return false;
 
         return true;
