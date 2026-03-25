@@ -9,10 +9,6 @@ import javafx.event.*;
 import java.io.IOException;
 
 public class DashboardController extends BaseController {
-    private Stage stage;
-    private Scene scene;
-    private Parent root;
-
     @FXML
     private void goToSprint(ActionEvent event) throws IOException {
         if (appState.getSprintManager().isActiveSprint()) {
