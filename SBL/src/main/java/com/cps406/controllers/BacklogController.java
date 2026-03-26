@@ -1,3 +1,10 @@
+// Authors: Saadiq Shahsamand, Ali Zarabi
+// Filename: BacklogController.java
+// Date Created: Mar 18 2026
+// Date Modified: Mar 26 2026
+// Description: Controller for the backlog scene, allows creation
+//              of backlog items and clearing the backlog
+
 package com.cps406.controllers;
 
 import com.cps406.AppState;
@@ -23,6 +30,9 @@ import java.util.Optional;
 import java.io.IOException;
 
 public class BacklogController extends BaseController {
+
+    // Store field and areas for user input
+    // Users will enter details of items they want to add in these fields and areas
     @FXML
     private TextField reqField;
 
@@ -41,12 +51,15 @@ public class BacklogController extends BaseController {
     @FXML
     private TextField riskField;
 
+    // Store the table for viewing the list of backlog items
     @FXML
     private TableView<Item> backlogTable;
 
+    // Store the columns in the backlog table
     @FXML
     private TableColumn<Item, String> nameCol;
 
+    // TODO: add space in the backlog table for the story and task
 //    @FXML
 //    private TableColumn<Item, String>
 //
@@ -62,6 +75,9 @@ public class BacklogController extends BaseController {
     @FXML
     private TableColumn<Item, Float> riskCol;
 
+    /**
+     * initialize cell values of each cell in the backlog table
+     */
     @FXML
     private void initialize() {
         nameCol.setCellValueFactory(
@@ -81,28 +97,42 @@ public class BacklogController extends BaseController {
         );
     }
 
+    /**
+     * Add an item to the product backlog
+     * @param event
+     */
     @FXML
     private void addToBacklog(ActionEvent event) {
         try {
+            // Retrieve product backlog
             ProductBacklog pb = appState.getProductBacklog();
 
+            // Retrieve the name, story, task, priority, effort, and risk of the item
+            // from the UI text fields/areas
             String name = reqField.getText().trim();
             String story = storyArea.getText().trim();
             String task = taskArea.getText().trim();
-
-            if (name.isEmpty() || story.isEmpty() || task.isEmpty()) {
-                throw new RuntimeException("Empty string");
-            }
-
             int priority = Integer.parseInt(priorityField.getText().trim());
             float effort = Float.parseFloat(effortField.getText().trim());
             float risk = Float.parseFloat(riskField.getText().trim());
 
+            // Throw exception if name, story, or task is empty
+            if (name.isEmpty() || story.isEmpty() || task.isEmpty()) {
+                throw new RuntimeException("Empty string");
+            }
+
+            // Create new item with the retrieved values
             Item item = new Item(name, story, task, priority, effort, risk);
+
+            // Add item to product backlog and backlog table
             pb.addItem(item);
             backlogTable.getItems().add(item);
+
+            // Save backlog
             appState.saveBacklog();
 
+            // At this point backlog addition was a success
+            // Clear the text fields and areas in the UI
             reqField.clear();
             storyArea.clear();
             taskArea.clear();
@@ -111,10 +141,10 @@ public class BacklogController extends BaseController {
             riskField.clear();
         }
         catch (NumberFormatException nfe) {
-
+            // TODO: display error message to user
         }
         catch (RuntimeException re) {
-
+            // TODO: same here
         }
     }
 
@@ -142,14 +172,22 @@ public class BacklogController extends BaseController {
         }
     }
 
+    /**
+     * Load and switch to the dashboard scene
+     * @param event
+     * @throws IOException if loading in the dashboard scene fails
+     */
     @FXML
     private void goToDashboard(ActionEvent event) throws IOException {
+        // Load dashboard scene
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/cps406/Dashboard.fxml"));
         root = loader.load();
 
+        // Set the app state of the controller for the dashboard scene
         DashboardController dbc = loader.getController();
         dbc.setAppState(appState);
 
+        // Create and set the scene
         stage = (Stage) ((Node)event.getSource()).getScene().getWindow();
         scene = new Scene(root);
         scene.getStylesheets().add(getClass().getResource("/com/cps406/styles.css").toExternalForm());
@@ -157,10 +195,12 @@ public class BacklogController extends BaseController {
         stage.show();
     }
 
+    // Set the app state
     @Override
     public void setAppState(AppState appState) {
         super.setAppState(appState);
 
+        // Add any existing backlog items to the backlog table
         for (Item item : appState.getProductBacklog().getBacklog()) {
             backlogTable.getItems().add(item);
         }
