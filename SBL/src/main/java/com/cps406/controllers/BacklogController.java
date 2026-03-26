@@ -125,8 +125,13 @@ public class BacklogController extends BaseController {
             Item item = new Item(name, story, task, priority, effort, risk);
 
             // Add item to product backlog and backlog table
-            pb.addItem(item);
-            backlogTable.getItems().add(item);
+            // throw error if the item with same name already exists
+            if (pb.addItem(item)) {
+                backlogTable.getItems().add(item);
+            }
+            else {
+                throw new RuntimeException("Item with this name already exists");
+            }
 
             // Save backlog
             appState.saveBacklog();
