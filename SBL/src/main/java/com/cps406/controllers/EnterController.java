@@ -12,11 +12,8 @@ import java.io.IOException;
 
 public class EnterController extends BaseController{
 
-        private Stage stage;
-        private Scene scene;
-        private Parent root;
 
-        //Code to go to the dashboard
+    //Code to go to the dashboard
     @FXML
     private void goToDashboard(ActionEvent event) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/cps406/Dashboard.fxml"));
