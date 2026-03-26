@@ -15,6 +15,10 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
+import java.util.Optional;
+
 import java.io.IOException;
 
 public class BacklogController extends BaseController {
@@ -111,9 +115,26 @@ public class BacklogController extends BaseController {
 
     @FXML
     private void clearBacklog(ActionEvent event) {
-        appState.getProductBacklog().clearBacklog(); // clear data
-        backlogTable.getItems().clear();             // clear UI
-        appState.saveBacklog();                      // save empty file
+        ProductBacklog pb = appState.getProductBacklog();
+
+        if (pb.getBacklog().size() != 0) {
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Confirm Backlog Clear");
+            alert.setHeaderText("Deleting all backlog items");
+            alert.setContentText("Items will not be recoverable. Proceed?");
+
+            ButtonType yesButton = new ButtonType("Yes");
+            ButtonType cancelButton = new ButtonType("No");
+
+            alert.getButtonTypes().setAll(yesButton, cancelButton);
+            Optional<ButtonType> result = alert.showAndWait();
+
+            if (result.isPresent() && result.get() == yesButton) {
+                appState.getProductBacklog().clearBacklog();
+                backlogTable.getItems().clear();
+                appState.saveBacklog();
+            }
+        }
     }
 
     @FXML
