@@ -3,11 +3,9 @@
 
 package com.cps406;
 
-import com.cps406.controllers.DashboardController;
 import com.cps406.controllers.EnterController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Group;
 import javafx.scene.*;
 import javafx.stage.Stage;
 import javafx.scene.image.Image;
@@ -54,7 +52,7 @@ public class Main extends Application {
 
         stage.setTitle("Product Backlog Manager");
         stage.getIcons().add(
-                new Image(getClass().getResourceAsStream("/com/cps406/logo64.png")));
+                new Image(getClass().getResourceAsStream("/com/cps406/logo.png")));
 
         stage.show();
     }

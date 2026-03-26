@@ -218,3 +218,18 @@
 .hyperlink:hover {
     -fx-text-fill: #3AAFA9;
 }
+
+.tooltip {
+    -fx-background-color: #FFFFFF;
+    -fx-text-fill: #2F3A4A;
+    -fx-background-radius: 10;
+    -fx-border-color: #D9E1EC;
+    -fx-border-radius: 10;
+    -fx-padding: 10;
+    -fx-font-size: 12px;
+
+    -fx-wrap-text: true;
+    -fx-max-width: 300px;
+
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 10, 0, 0, 2);
+}

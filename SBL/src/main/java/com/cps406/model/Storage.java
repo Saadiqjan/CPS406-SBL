@@ -2,7 +2,7 @@
 // Filename: Storage.java
 // Creation Date: Mar 25 2026
 // Modified Date: Mar 25 2026
-// Description:
+// Description: This is a storage script which saves the product backlog into the "backlog.dat" file.
 
 package com.cps406.model;
 import java.io.*;

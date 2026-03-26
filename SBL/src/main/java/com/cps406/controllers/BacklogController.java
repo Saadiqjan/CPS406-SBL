@@ -29,6 +29,11 @@ import java.util.Optional;
 
 import java.io.IOException;
 
+import javafx.animation.PauseTransition;
+import javafx.scene.control.Tooltip;
+import javafx.scene.control.TableRow;
+import javafx.util.Duration;
+
 public class BacklogController extends BaseController {
 
     // Store field and areas for user input
@@ -95,6 +100,61 @@ public class BacklogController extends BaseController {
         riskCol.setCellValueFactory(
                 new PropertyValueFactory<>("risk")
         );
+
+        /**
+         * Initialize a pop-up to appear when a task is hovered over for one second. This popup showcases
+         * the task's story, task, priority, effort and risk in that order. Cascades text to ensure the popup
+         * doesn't get too our of hand.
+         **/
+        backlogTable.setRowFactory(tv -> {
+            TableRow<Item> row = new TableRow<>();
+            Tooltip tooltip = new Tooltip();
+            tooltip.setWrapText(true);
+            tooltip.setMaxWidth(300);
+            PauseTransition delay = new PauseTransition(Duration.seconds(0.75));
+
+            row.setOnMouseEntered(event -> {
+                if (row.isEmpty() || row.getItem() == null) {
+                    return;
+                }
+
+                Item item = row.getItem();
+
+                tooltip.setText(
+                        "Story:\n" + item.getStory() + "\n\n" +
+                                "Task:\n" + item.getTask() + "\n\n" +
+                                "Priority: " + item.getPriority() + "\n" +
+                                "Effort: " + item.getEffort() + "\n" +
+                                "Risk: " + item.getRisk()
+                );
+
+                delay.setOnFinished(e -> {
+                    if (row.isHover() && !row.isEmpty()) {
+                        tooltip.show(
+                                row,
+                                event.getScreenX() + 10,
+                                event.getScreenY() + 10
+                        );
+                    }
+                });
+
+                delay.playFromStart();
+            });
+
+            row.setOnMouseExited(event -> {
+                delay.stop();
+                tooltip.hide();
+            });
+
+            row.setOnMouseMoved(event -> {
+                if (tooltip.isShowing()) {
+                    tooltip.setX(event.getScreenX() + 10);
+                    tooltip.setY(event.getScreenY() + 10);
+                }
+            });
+
+            return row;
+        });
     }
 
     /**
