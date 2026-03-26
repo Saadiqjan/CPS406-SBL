@@ -6,6 +6,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Group;
 import javafx.scene.*;
 import javafx.stage.Stage;
+import javafx.scene.image.Image;
 
 import java.io.IOException;
 
@@ -27,6 +28,9 @@ public class Main extends Application {
         dbc.setAppState(appState);
 
         stage.setScene(scene);
+        stage.setTitle("Product Backlog Manager");
+        stage.getIcons().add(
+                new Image(getClass().getResourceAsStream("/com/cps406/logo64.png")));
         stage.show();
     }
 }

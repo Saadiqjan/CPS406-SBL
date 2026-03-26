@@ -12,7 +12,7 @@
 
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="601.0" styleClass="subtitle-label" stylesheets="@styles.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.cps406.controllers.DashboardController">
    <top>
-      <Label prefHeight="32.0" prefWidth="121.0" stylesheets="@styles.css" text="Dashboard" BorderPane.alignment="CENTER_LEFT" />
+      <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="32.0" prefWidth="603.0" stylesheets="@styles.css" text="Dashboard" BorderPane.alignment="CENTER_LEFT" />
    </top>
    <bottom>
       <ButtonBar prefHeight="40.0" prefWidth="200.0" styleClass="accent-label" stylesheets="@styles.css" BorderPane.alignment="CENTER">
