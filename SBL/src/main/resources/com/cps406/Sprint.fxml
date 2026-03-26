@@ -60,6 +60,6 @@
       </ScrollPane>
    </center>
    <bottom>
-      <Button alignment="TOP_LEFT" centerShape="false" contentDisplay="RIGHT" mnemonicParsing="false" prefHeight="26.0" prefWidth="86.0" text="Dashboard" textAlignment="CENTER" BorderPane.alignment="BOTTOM_RIGHT" />
+      <Button alignment="CENTER" centerShape="false" contentDisplay="RIGHT" mnemonicParsing="false" prefHeight="26.0" prefWidth="86.0" text="Dashboard" textAlignment="CENTER" BorderPane.alignment="BOTTOM_RIGHT" />
    </bottom>
 </BorderPane>
