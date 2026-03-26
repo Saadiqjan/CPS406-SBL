@@ -174,7 +174,13 @@ public class BacklogController extends BaseController {
             String task = taskArea.getText().trim();
             int priority = Integer.parseInt(priorityField.getText().trim());
             float effort = Float.parseFloat(effortField.getText().trim());
-            float risk = Float.parseFloat(riskField.getText().trim());
+            String tempRisk = riskField.getText().trim();
+            float risk = -1;
+
+            // Parse risk if not
+            if (!tempRisk.isEmpty()) {
+                risk = Float.parseFloat(tempRisk);
+            }
 
             // Throw exception if name, story, or task is empty
             if (name.isEmpty() || story.isEmpty() || task.isEmpty()) {
