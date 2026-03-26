@@ -17,6 +17,7 @@
    <bottom>
       <ButtonBar prefHeight="32.0" prefWidth="594.0" BorderPane.alignment="CENTER">
         <buttons>
+            <Button mnemonicParsing="false" onAction="#clearBacklog" prefHeight="25.0" prefWidth="439.0" text="Clear Current Backlog" />
           <Button mnemonicParsing="false" onAction="#goToDashboard" text="Back" />
         </buttons>
       </ButtonBar>
@@ -59,7 +60,7 @@
                </children>
             </HBox>
             <Separator prefWidth="200.0" />
-            <Button alignment="CENTER" mnemonicParsing="false" onAction="#addToBacklog" text="Add to Backlog" textAlignment="CENTER" />
+            <Button alignment="CENTER" mnemonicParsing="false" onAction="#addToBacklog" prefHeight="25.0" prefWidth="280.0" text="Add to Backlog" textAlignment="CENTER" />
          </children></VBox>
    </right>
    <center>

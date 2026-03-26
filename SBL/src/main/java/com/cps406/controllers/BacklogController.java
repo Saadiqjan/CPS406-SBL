@@ -92,6 +92,7 @@ public class BacklogController extends BaseController {
             Item item = new Item(name, story, task, priority, effort, risk);
             pb.addItem(item);
             backlogTable.getItems().add(item);
+            appState.saveBacklog();
 
             reqField.clear();
             storyArea.clear();
@@ -106,6 +107,13 @@ public class BacklogController extends BaseController {
         catch (Exception e) {
 
         }
+    }
+
+    @FXML
+    private void clearBacklog(ActionEvent event) {
+        appState.getProductBacklog().clearBacklog(); // clear data
+        backlogTable.getItems().clear();             // clear UI
+        appState.saveBacklog();                      // save empty file
     }
 
     @FXML

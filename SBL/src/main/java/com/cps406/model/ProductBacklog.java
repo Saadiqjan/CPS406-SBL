@@ -1,8 +1,11 @@
 package com.cps406.model;
 
 import java.util.ArrayList;
+import java.io.Serializable;
 
-public class ProductBacklog {
+public class ProductBacklog implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     private ArrayList<Item> items;
 
     public ProductBacklog() {
@@ -37,4 +40,7 @@ public class ProductBacklog {
 
         return null;
     }
+
+    //Clear the Backlog ArrayList
+    public void clearBacklog() {items.clear();}
 }

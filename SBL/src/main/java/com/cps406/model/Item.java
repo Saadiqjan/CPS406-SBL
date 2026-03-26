@@ -1,8 +1,10 @@
 package com.cps406.model;
 
 import java.util.ArrayList;
+import java.io.Serializable;
 
-public class Item {
+public class Item implements Serializable {
+    private static final long serialVersionUID = 1L;
     private String name;
     private String story;
     private String task;

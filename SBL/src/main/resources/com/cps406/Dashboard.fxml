@@ -17,7 +17,7 @@
    <bottom>
       <ButtonBar prefHeight="40.0" prefWidth="200.0" styleClass="accent-label" stylesheets="@styles.css" BorderPane.alignment="CENTER">
         <buttons>
-          <Button mnemonicParsing="false" onAction="#goToBacklog" stylesheets="@styles.css" text="Product Backlog" textAlignment="CENTER" />
+          <Button mnemonicParsing="false" onAction="#goToBacklog" prefHeight="35.0" prefWidth="515.0" stylesheets="@styles.css" text="Product Backlog" textAlignment="CENTER" />
             <Button mnemonicParsing="false" onAction="#goToSprint" stylesheets="@styles.css" text="Current Sprint" textAlignment="CENTER" />
         </buttons>
       </ButtonBar>

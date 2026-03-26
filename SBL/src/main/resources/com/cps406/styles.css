@@ -2,130 +2,134 @@
 
 /* Root / general app background */
 .root {
-    -fx-background-color: #e6e6e6; /* alabaster-grey */
+    -fx-background-color: #F7F9FC;
     -fx-font-family: "Segoe UI", Arial, sans-serif;
 }
 
 /* Main container backgrounds */
 .main-pane {
-    -fx-background-color: #e6e6e6;
+    -fx-background-color: #F7F9FC;
 }
 
 .card-pane {
-    -fx-background-color: white;
-    -fx-background-radius: 12;
-    -fx-border-radius: 12;
-    -fx-border-color: #d0d0d0;
+    -fx-background-color: #FFFFFF;
+    -fx-background-radius: 14;
+    -fx-border-radius: 14;
+    -fx-border-color: #D9E1EC;
+    -fx-border-width: 1;
     -fx-padding: 15;
 }
 
 /* Labels */
 .label {
-    -fx-text-fill: #39393a; /* graphite */
+    -fx-text-fill: #2F3A4A;
 }
 
 .title-label {
-    -fx-text-fill: #297373; /* pine-blue */
+    -fx-text-fill: #243447;
     -fx-font-size: 24px;
     -fx-font-weight: bold;
 }
 
 .subtitle-label {
-    -fx-text-fill: #39393a;
+    -fx-text-fill: #5B6B7F;
     -fx-font-size: 16px;
     -fx-font-weight: bold;
 }
 
 .accent-label {
-    -fx-text-fill: #ff8552; /* coral-glow */
+    -fx-text-fill: #2A6F97;
     -fx-font-weight: bold;
 }
 
 /* Buttons */
 .button {
-    -fx-background-color: #297373; /* pine-blue */
+    -fx-background-color: #2A6F97;
     -fx-text-fill: white;
-    -fx-background-radius: 8;
-    -fx-border-radius: 8;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
     -fx-padding: 8 16 8 16;
     -fx-font-weight: bold;
+    -fx-cursor: hand;
 }
 
 .button:hover {
-    -fx-background-color: #1f5c5c;
+    -fx-background-color: #235E80;
 }
 
 .button:pressed {
-    -fx-background-color: #174646;
+    -fx-background-color: #1D4F6B;
 }
 
 /* Secondary button */
 .secondary-button {
-    -fx-background-color: #e9d758; /* straw-gold */
-    -fx-text-fill: #39393a; /* graphite */
-    -fx-background-radius: 8;
-    -fx-border-radius: 8;
+    -fx-background-color: #DCE8F5;
+    -fx-text-fill: #243447;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
     -fx-font-weight: bold;
 }
 
 .secondary-button:hover {
-    -fx-background-color: #d8c84d;
+    -fx-background-color: #CADCED;
 }
 
-/* Danger / highlight button */
+/* Accent button */
 .accent-button {
-    -fx-background-color: #ff8552; /* coral-glow */
+    -fx-background-color: #3AAFA9;
     -fx-text-fill: white;
-    -fx-background-radius: 8;
-    -fx-border-radius: 8;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
     -fx-font-weight: bold;
 }
 
 .accent-button:hover {
-    -fx-background-color: #e8703f;
+    -fx-background-color: #329892;
 }
 
 /* Text fields */
 .text-field,
 .password-field,
 .text-area {
-    -fx-background-color: white;
-    -fx-text-fill: #39393a;
-    -fx-prompt-text-fill: #888888;
-    -fx-border-color: #297373;
-    -fx-border-radius: 6;
-    -fx-background-radius: 6;
+    -fx-background-color: #FFFFFF;
+    -fx-text-fill: #2F3A4A;
+    -fx-prompt-text-fill: #8A97A8;
+    -fx-border-color: #C9D5E3;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
 }
 
 .text-field:focused,
 .password-field:focused,
 .text-area:focused {
-    -fx-border-color: #ff8552;
+    -fx-border-color: #2A6F97;
     -fx-border-width: 2;
 }
 
 /* ComboBox */
 .combo-box {
-    -fx-background-color: white;
-    -fx-border-color: #297373;
-    -fx-border-radius: 6;
-    -fx-background-radius: 6;
+    -fx-background-color: #FFFFFF;
+    -fx-border-color: #C9D5E3;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
 }
 
 /* TableView */
 .table-view {
-    -fx-background-color: white;
-    -fx-border-color: #297373;
-    -fx-border-radius: 6;
+    -fx-background-color: #FFFFFF;
+    -fx-border-color: #D9E1EC;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
 }
 
 .table-view .column-header-background {
-    -fx-background-color: #297373;
+    -fx-background-color: #243447;
+    -fx-background-radius: 8 8 0 0;
 }
 
 .table-view .column-header,
 .table-view .filler {
-    -fx-background-color: #297373;
+    -fx-background-color: #243447;
 }
 
 .table-view .column-header .label {
@@ -133,29 +137,35 @@
     -fx-font-weight: bold;
 }
 
+.table-row-cell {
+    -fx-background-color: #FFFFFF;
+    -fx-border-color: transparent transparent #EEF2F7 transparent;
+}
+
 .table-row-cell:selected {
-    -fx-background-color: #e9d758;
+    -fx-background-color: #F6C85F;
 }
 
 .table-row-cell:selected .text {
-    -fx-fill: #39393a;
+    -fx-fill: #243447;
 }
 
 /* ListView */
 .list-view {
-    -fx-background-color: white;
-    -fx-border-color: #297373;
-    -fx-border-radius: 6;
+    -fx-background-color: #FFFFFF;
+    -fx-border-color: #D9E1EC;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
 }
 
 .list-cell:selected {
-    -fx-background-color: #e9d758;
-    -fx-text-fill: #39393a;
+    -fx-background-color: #DCE8F5;
+    -fx-text-fill: #243447;
 }
 
 /* Menu / top bar style */
 .top-bar {
-    -fx-background-color: #297373;
+    -fx-background-color: #243447;
 }
 
 .top-bar .label {
@@ -166,44 +176,45 @@
 
 /* Sidebar */
 .sidebar {
-    -fx-background-color: #39393a; /* graphite */
+    -fx-background-color: #1E2A38;
 }
 
 .sidebar .label {
-    -fx-text-fill: white;
+    -fx-text-fill: #F7F9FC;
 }
 
 .sidebar .button {
     -fx-background-color: transparent;
-    -fx-text-fill: white;
+    -fx-text-fill: #F7F9FC;
     -fx-alignment: CENTER-LEFT;
+    -fx-background-radius: 8;
 }
 
 .sidebar .button:hover {
-    -fx-background-color: #ff8552;
+    -fx-background-color: #2A6F97;
 }
 
 /* Highlight panels */
 .highlight-pane {
-    -fx-background-color: #e9d758;
-    -fx-background-radius: 10;
+    -fx-background-color: #DCE8F5;
+    -fx-background-radius: 12;
 }
 
 .accent-pane {
-    -fx-background-color: #ff8552;
-    -fx-background-radius: 10;
+    -fx-background-color: #3AAFA9;
+    -fx-background-radius: 12;
 }
 
 .dark-pane {
-    -fx-background-color: #39393a;
-    -fx-background-radius: 10;
+    -fx-background-color: #243447;
+    -fx-background-radius: 12;
 }
 
 /* Hyperlinks */
 .hyperlink {
-    -fx-text-fill: #297373;
+    -fx-text-fill: #2A6F97;
 }
 
 .hyperlink:hover {
-    -fx-text-fill: #ff8552;
+    -fx-text-fill: #3AAFA9;
 }
