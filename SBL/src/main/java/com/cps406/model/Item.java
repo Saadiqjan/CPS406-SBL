@@ -18,6 +18,7 @@ public class Item implements Serializable {
     private String task;
     private int priority;
     private float effort;
+    private float time;
     private float risk;
 
     // Store item status
@@ -31,19 +32,20 @@ public class Item implements Serializable {
      * Create a new item
      *
      * @param name of the item
-     * @param story the user story the from which the requirement comes from
+     * @param story the user story the form which the requirement comes from
      * @param task at hand to fulfill the requirement
      * @param priority of this item
      * @param effort estimated effort required
      * @param risk estimated risk
      */
-    public Item(String name, String story, String task, int priority, float effort, float risk) {
+    public Item(String name, String story, String task, int priority, float effort, float time, float risk) {
         // Store parameters
         this.name = name;
         this.story = story;
         this.task = task;
         this.priority = priority;
         this.effort = effort;
+        this.time = time;
         this.risk = risk;
 
         // Set status
@@ -63,6 +65,7 @@ public class Item implements Serializable {
     public String getTask() { return task; }
     public int getPriority() { return priority; }
     public float getEffort() { return effort; }
+    public float getTime() { return time; }
     public float getRisk() { return risk; }
     public Status getStatus() { return status; }
     public ArrayList<Task> getTasks() { return tasks; }
@@ -70,6 +73,7 @@ public class Item implements Serializable {
     // Setters
     public void setPriority(int newPriority) { priority = newPriority; }
     public void setEffort(int newEffort) { effort = newEffort; }
+    public void settime(int newtime) { risk = newtime; }
     public void setRisk(int newRisk) { risk = newRisk; }
     public void setStatus(Status newStatus) { status = newStatus; };
 

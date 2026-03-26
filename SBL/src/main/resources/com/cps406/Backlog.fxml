@@ -42,21 +42,28 @@
             <HBox prefHeight="32.0" prefWidth="143.0">
                <children>
                   <Label prefHeight="18.0" prefWidth="80.0" text="Priority" />
-                  <TextField fx:id="priorityField" prefHeight="26.0" prefWidth="125.0" />
+                  <TextField fx:id="priorityField" prefHeight="26.0" prefWidth="125.0" promptText="(1-3)" />
                </children>
             </HBox>
             <Separator prefWidth="200.0" />
             <HBox prefHeight="31.0" prefWidth="143.0">
                <children>
                   <Label prefHeight="18.0" prefWidth="79.0" text="Effort" />
-                  <TextField fx:id="effortField" prefHeight="26.0" prefWidth="125.0" />
+                  <TextField fx:id="effortField" prefHeight="26.0" prefWidth="125.0" promptText="(1-5)" />
+               </children>
+            </HBox>
+            <Separator layoutX="10.0" layoutY="342.0" prefWidth="200.0" />
+            <HBox layoutX="10.0" layoutY="379.0" prefHeight="31.0" prefWidth="143.0">
+               <children>
+                  <Label prefHeight="18.0" prefWidth="79.0" text="Time" />
+                  <TextField fx:id="timeField" prefHeight="26.0" prefWidth="125.0" promptText="(Hours)" />
                </children>
             </HBox>
             <Separator prefWidth="200.0" />
             <HBox prefHeight="31.0" prefWidth="143.0">
                <children>
                   <Label prefHeight="18.0" prefWidth="79.0" text="Risk" />
-                  <TextField fx:id="riskField" prefHeight="26.0" prefWidth="125.0" />
+                  <TextField fx:id="riskField" prefHeight="26.0" prefWidth="125.0" promptText="(1-5)" />
                </children>
             </HBox>
             <Separator prefWidth="200.0" />
@@ -69,6 +76,7 @@
           <TableColumn fx:id="nameCol" prefWidth="75.0" text="Requirement" />
             <TableColumn fx:id="priorityCol" prefWidth="75.0" text="Priority" />
             <TableColumn fx:id="effortCol" prefWidth="75.0" text="Effort" />
+            <TableColumn fx:id="timeCol" prefWidth="75.0" text="Time Estimate" />
           <TableColumn fx:id="riskCol" prefWidth="75.0" text="Risk" />
         </columns>
          <columnResizePolicy>
