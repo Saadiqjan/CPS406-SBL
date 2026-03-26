@@ -34,6 +34,9 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.control.TableRow;
 import javafx.util.Duration;
 
+import javafx.scene.control.TextFormatter;
+import java.util.function.UnaryOperator;
+
 public class BacklogController extends BaseController {
 
     // Store field and areas for user input
@@ -52,6 +55,9 @@ public class BacklogController extends BaseController {
 
     @FXML
     private TextField effortField;
+
+    @FXML
+    private TextField timeField;
 
     @FXML
     private TextField riskField;
@@ -78,6 +84,9 @@ public class BacklogController extends BaseController {
     private TableColumn<Item, Float> effortCol;
 
     @FXML
+    private TableColumn<Item, Float> timeCol;
+
+    @FXML
     private TableColumn<Item, Float> riskCol;
 
     /**
@@ -93,13 +102,85 @@ public class BacklogController extends BaseController {
                 new PropertyValueFactory<>("priority")
         );
 
+        UnaryOperator<TextFormatter.Change> priorityFilter = change -> {
+            String text = change.getControlNewText();
+
+            if (text.isEmpty()) return change;
+            if (!text.matches("\\d+")) return null;
+
+            int value = Integer.parseInt(text);
+            if (value < 1 || value > 3) return null;
+
+            return change;
+        };
+
+        priorityField.setTextFormatter(new TextFormatter<>(priorityFilter));
+
         effortCol.setCellValueFactory(
                 new PropertyValueFactory<>("effort")
         );
 
+        UnaryOperator<TextFormatter.Change> effortFilter = change -> {
+            String text = change.getControlNewText();
+
+            if (text.isEmpty()) return change;
+            if (!text.matches("\\d*(\\.\\d*)?")) return null;
+
+            try {
+                float value = Float.parseFloat(text);
+                if (value < 1 || value > 5) return null;
+            } catch (NumberFormatException e) {
+                return null;
+            }
+
+            return change;
+        };
+
+        effortField.setTextFormatter(new TextFormatter<>(effortFilter));
+
+        timeCol.setCellValueFactory(
+                new PropertyValueFactory<>("time")
+        );
+
+        UnaryOperator<TextFormatter.Change> timeFilter = change -> {
+            String text = change.getControlNewText();
+
+            if (text.isEmpty()) return change;
+            if (!text.matches("\\d*(\\.\\d*)?")) return null;
+
+            try {
+                float value = Float.parseFloat(text);
+                if (value < 0) return null;
+            } catch (NumberFormatException e) {
+                return null;
+            }
+
+            return change;
+        };
+
+        timeField.setTextFormatter(new TextFormatter<>(timeFilter));
+
         riskCol.setCellValueFactory(
                 new PropertyValueFactory<>("risk")
         );
+
+        UnaryOperator<TextFormatter.Change> riskFilter = change -> {
+            String text = change.getControlNewText();
+
+            if (text.isEmpty()) return change;
+            if (!text.matches("\\d*(\\.\\d*)?")) return null;
+
+            try {
+                float value = Float.parseFloat(text);
+                if (value < 1 || value > 5) return null;
+            } catch (NumberFormatException e) {
+                return null;
+            }
+
+            return change;
+        };
+
+        riskField.setTextFormatter(new TextFormatter<>(riskFilter));
 
         /**
          * Initialize a pop-up to appear when a task is hovered over for one second. This popup showcases
@@ -191,7 +272,7 @@ public class BacklogController extends BaseController {
             }
 
             // Create new item with the retrieved values
-            Item item = new Item(name, story, task, priority, effort, risk);
+            Item item = new Item(name, story, task, priority, effort, time, risk);
 
             // Add item to product backlog and backlog table
             // throw error if the item with same name already exists
@@ -212,6 +293,7 @@ public class BacklogController extends BaseController {
             taskArea.clear();
             priorityField.clear();
             effortField.clear();
+            timeField.clear();
             riskField.clear();
         }
         catch (NumberFormatException nfe) {
