@@ -49,3 +49,8 @@ out/
 SBL/target/
 !.mvn/wrapper/maven-wrapper.jar
 .mvn/wrapper/maven-wrapper.properties
+
+# ===========================
+# Data files
+# ===========================
+backlog.dat
