@@ -14,11 +14,11 @@
             <Image url="@Background%20Color.jpg" />
          </image>
       </ImageView>
-      <Button layoutX="220.0" layoutY="294.0" mnemonicParsing="false" onAction="#goToDashboard" prefHeight="60.0" prefWidth="161.0" text="Enter">
+      <Button layoutX="226.0" layoutY="301.0" mnemonicParsing="false" onAction="#goToDashboard" prefHeight="55.0" prefWidth="150.0" text="Enter">
          <font>
             <Font size="20.0" />
          </font></Button>
-      <Text layoutX="92.0" layoutY="249.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Product and Sprint Backlogs Manager" textAlignment="CENTER" wrappingWidth="417.0">
+      <Text layoutX="96.0" layoutY="256.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Product and Sprint Backlogs Manager" textAlignment="CENTER" wrappingWidth="417.0">
          <font>
             <Font size="25.0" />
          </font>

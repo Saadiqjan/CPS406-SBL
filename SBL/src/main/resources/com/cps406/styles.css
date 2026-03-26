@@ -140,10 +140,15 @@
 .table-row-cell {
     -fx-background-color: #FFFFFF;
     -fx-border-color: transparent transparent #EEF2F7 transparent;
+    -fx-background-insets: 0, 0 0 1 0;
+}
+
+.table-row-cell:hover {
+    -fx-background-color: #F2F6FB;
 }
 
 .table-row-cell:selected {
-    -fx-background-color: #F6C85F;
+    -fx-background-color: #DCEAF8;
 }
 
 .table-row-cell:selected .text {
