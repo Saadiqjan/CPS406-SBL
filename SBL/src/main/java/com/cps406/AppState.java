@@ -13,7 +13,7 @@ public class AppState {
         productBacklog = Storage.load();
     }
 
-    public void saveBacklog() {Storage.save(productBacklog);}
+    public void saveBacklog() { Storage.save(productBacklog); }
 
     public SprintManager getSprintManager() {
         return sprintManager;
