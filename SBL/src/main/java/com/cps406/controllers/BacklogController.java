@@ -89,6 +89,10 @@ public class BacklogController extends BaseController {
             String story = storyArea.getText().trim();
             String task = taskArea.getText().trim();
 
+            if (name.isEmpty() || story.isEmpty() || task.isEmpty()) {
+                throw new RuntimeException("Empty string");
+            }
+
             int priority = Integer.parseInt(priorityField.getText().trim());
             float effort = Float.parseFloat(effortField.getText().trim());
             float risk = Float.parseFloat(riskField.getText().trim());
@@ -108,7 +112,7 @@ public class BacklogController extends BaseController {
         catch (NumberFormatException nfe) {
 
         }
-        catch (Exception e) {
+        catch (RuntimeException re) {
 
         }
     }
