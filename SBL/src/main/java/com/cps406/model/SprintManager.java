@@ -25,7 +25,7 @@ public class SprintManager {
      */
     public SprintManager() {
         prevSprints = new ArrayList<Sprint>();
-        curSprint = new Sprint(20, LocalDate.now().plusWeeks(2));
+        curSprint = null; // INIT THIS IN createSprint
     }
 
     // Getters
@@ -62,5 +62,9 @@ public class SprintManager {
                 backlog.addItem(item);
             }
         }
+
+        //save old sprint and reset for new one
+        prevSprints.add(curSprint);
+        curSprint = null;
     }
 }

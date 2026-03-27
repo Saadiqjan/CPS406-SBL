@@ -39,6 +39,8 @@ public class Sprint {
         start = LocalDate.now();
         this.end = end;
         this.status = Status.IN_PROGRESS;
+
+        items = new ArrayList<>();
     }
 
     // Get items
