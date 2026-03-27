@@ -15,26 +15,18 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
 import java.util.Optional;
 
 import java.io.IOException;
 
 import javafx.animation.PauseTransition;
-import javafx.scene.control.Tooltip;
-import javafx.scene.control.TableRow;
 import javafx.util.Duration;
 
-import javafx.scene.control.TextFormatter;
 import java.util.function.UnaryOperator;
 
 public class BacklogController extends BaseController {
@@ -164,6 +156,24 @@ public class BacklogController extends BaseController {
                 new PropertyValueFactory<>("risk")
         );
 
+        // This will ensure that any negative risk values (risk not specified)
+        // will appear as 'N/A' on the actual table
+        riskCol.setCellFactory(col -> new TableCell<>() {
+            @Override
+            protected void updateItem(Float value, boolean empty) {
+                super.updateItem(value, empty);
+                if (empty || value == null) {
+                    setText("");
+                }
+                else if (value == -1f) {
+                    setText("N/A");
+                }
+                else {
+                    setText(String.format("%.2f", value));
+                }
+            }
+        });
+
         UnaryOperator<TextFormatter.Change> riskFilter = change -> {
             String text = change.getControlNewText();
 
@@ -260,7 +270,7 @@ public class BacklogController extends BaseController {
             String tempRisk = riskField.getText().trim();
             float risk = -1;
 
-            // Parse risk if not
+            // Parse risk if not empty
             if (!tempRisk.isEmpty()) {
                 risk = Float.parseFloat(tempRisk);
             }
