@@ -43,9 +43,33 @@ public class SprintManager {
         return true;
     }
 
-    // TODO: implement this
-    //       note: items added to a sprint should be removed from the product backlog
-    // public boolean createSprint()
+
+    /**
+    *   Create Sprint
+    *   @param capacity, endDate, backlog, selectedItems
+    *   @return true if sprint was successfully created, false otherwise
+     */
+    public boolean createSprint(int capacity, LocalDate endDate, ProductBacklog backlog, ArrayList<Item> selectedItems) {
+
+        // prevent multiple sprints
+        if (curSprint != null) {
+            return false;
+        }
+
+        // check if sprint is valid
+        if (capacity <= 0) return false;
+        if (endDate == null || endDate.isBefore(LocalDate.now())) return false;
+
+        curSprint = new Sprint(capacity, endDate);
+
+        // add items to sprint and remove from backlog
+        for (Item item: selectedItems) {
+            curSprint.getItems().add(item);
+            backlog.removeItem(item.getName());
+        }
+
+        return true; // sprint was successfully created
+    }
 
     /**
      * end sprint
