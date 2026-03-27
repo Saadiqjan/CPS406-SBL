@@ -15,10 +15,13 @@
    <right>
       <VBox prefHeight="400.0" prefWidth="169.0" BorderPane.alignment="CENTER">
          <children>
-            <Label text="Story" textAlignment="CENTER" />
+            <Label layoutX="10.0" layoutY="13.0" text="Requirement:" textAlignment="CENTER" />
+            <Label layoutX="10.0" layoutY="10.0" textAlignment="CENTER" />
+            <Separator layoutX="10.0" layoutY="45.0" prefWidth="200.0" />
+            <Label text="Story:" textAlignment="CENTER" />
             <Label />
             <Separator prefWidth="200.0" />
-            <Label text="Task" />
+            <Label text="Task:" />
             <Label prefHeight="25.0" prefWidth="170.0" />
             <Separator prefWidth="200.0" />
             <HBox prefHeight="34.0" prefWidth="140.0">
@@ -49,7 +52,8 @@
               <columns>
                 <TableColumn prefWidth="75.0" text="Requirement" />
                   <TableColumn prefWidth="75.0" text="Priority" />
-                  <TableColumn prefWidth="75.0" text="Estimate" />
+                  <TableColumn prefWidth="75.0" text="Effort" />
+                  <TableColumn prefWidth="75.0" text="Time Estimate" />
                   <TableColumn prefWidth="75.0" text="Risk" />
               </columns>
                <columnResizePolicy>
@@ -60,6 +64,6 @@
       </ScrollPane>
    </center>
    <bottom>
-      <Button alignment="CENTER" centerShape="false" contentDisplay="RIGHT" mnemonicParsing="false" prefHeight="26.0" prefWidth="86.0" text="Dashboard" textAlignment="CENTER" BorderPane.alignment="BOTTOM_RIGHT" />
+      <Button alignment="CENTER" centerShape="false" contentDisplay="RIGHT" mnemonicParsing="false" onAction="#goToDashboard" prefHeight="26.0" prefWidth="700.0" text="Dashboard" textAlignment="CENTER" BorderPane.alignment="BOTTOM_RIGHT" />
    </bottom>
 </BorderPane>

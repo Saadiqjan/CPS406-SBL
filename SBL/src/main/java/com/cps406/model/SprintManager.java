@@ -7,6 +7,7 @@
 
 package com.cps406.model;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 public class SprintManager {
@@ -24,7 +25,7 @@ public class SprintManager {
      */
     public SprintManager() {
         prevSprints = new ArrayList<Sprint>();
-        curSprint = null;
+        curSprint = new Sprint(20, LocalDate.now().plusWeeks(2));
     }
 
     // Getters
