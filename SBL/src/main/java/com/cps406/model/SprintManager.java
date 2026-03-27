@@ -37,10 +37,7 @@ public class SprintManager {
      * @return true if active sprint, false otherwise
      */
     public boolean isActiveSprint() {
-        if (curSprint == null)
-            return false;
-
-        return true;
+        return curSprint != null;
     }
 
 
