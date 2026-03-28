@@ -9,6 +9,7 @@ package com.cps406.model;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class SprintManager {
     // Store previous Sprints
@@ -87,5 +88,32 @@ public class SprintManager {
         //save old sprint and reset for new one
         prevSprints.add(curSprint);
         curSprint = null;
+    }
+
+    public ArrayList<Item> generateSprintBacklog (ArrayList<Item> productBacklog, int capacity) {
+        // Store recommended list of sprint items
+        ArrayList<Item> sprintList = new ArrayList<Item>();
+
+        // Store total effort
+        float totalEffort = 0;
+        float curEffort = 0;
+
+        // Sort list based on priority
+        Collections.sort(productBacklog);
+
+        // Add items to sprint list until capacity is exceeded
+        for (int i = 0; i < productBacklog.toArray().length; i++) {
+            curEffort = productBacklog.get(i).getEffort();
+
+            if (totalEffort + curEffort < capacity) {
+                totalEffort += curEffort;
+
+                sprintList.add(productBacklog.get(i));
+            } else {
+                break;
+            }
+        }
+
+        return sprintList;
     }
 }
