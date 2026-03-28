@@ -16,6 +16,8 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 
 public class CreateSprintController extends BaseController {
 
@@ -64,6 +66,23 @@ public class CreateSprintController extends BaseController {
     private void initialize() {
         setTableColumns(pbTable, pbNameCol, pbPriorityCol, pbEffortCol, pbTimeCol, pbRiskCol);
         setTableColumns(sbTable, sbNameCol, sbPriorityCol, sbEffortCol, sbTimeCol, sbRiskCol);
+    }
+
+    /**
+     * Generate a sprint backlog and display it
+     */
+    @FXML
+    private void generateSprint() {
+        // Generate list of sprint items
+        ArrayList<Item> sprintList = appState.getSprintManager().generateSprintBacklog(
+                appState.getProductBacklog().getBacklog(),
+                20
+        );
+
+        // Add sprint items to the sprint backlog table
+        for (Item sprintItem : sprintList) {
+            sbTable.getItems().add(sprintItem);
+        }
     }
 
     @FXML
