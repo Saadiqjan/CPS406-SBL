@@ -15,7 +15,7 @@
     <HBox layoutX="56.0" layoutY="60.0" prefHeight="480" prefWidth="939.0" spacing="20">
         <VBox prefHeight="480.0" prefWidth="430.0" spacing="10">
             <Label text="Product Backlog Items:" />
-            <TableView prefHeight="452.0" prefWidth="430.0">
+            <TableView fx:id="pbTable" prefHeight="452.0" prefWidth="430.0">
                 <columns>
                     <TableColumn fx:id="pbNameCol" prefWidth="75.0" text="Requirement" />
                     <TableColumn fx:id="pbPriorityCol" prefWidth="75.0" text="Priority" />
@@ -30,7 +30,7 @@
         </VBox>
         <VBox spacing="10">
             <Label text="Selected Items for Sprint:" />
-            <TableView prefHeight="460.0" prefWidth="430.0">
+            <TableView fx:id="sbTable" prefHeight="460.0" prefWidth="430.0">
                 <columns>
                     <TableColumn fx:id="sbNameCol" prefWidth="75.0" text="Requirement" />
                     <TableColumn fx:id="sbPriorityCol" prefWidth="75.0" text="Priority" />

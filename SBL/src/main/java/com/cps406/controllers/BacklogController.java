@@ -62,13 +62,6 @@ public class BacklogController extends BaseController {
     @FXML
     private TableColumn<Item, String> nameCol;
 
-    // TODO: add space in the backlog table for the story and task
-//    @FXML
-//    private TableColumn<Item, String>
-//
-//    @FXML
-//    private TableColumn<Item, String>
-
     @FXML
     private TableColumn<Item, Integer> priorityCol;
 
@@ -86,13 +79,7 @@ public class BacklogController extends BaseController {
      */
     @FXML
     private void initialize() {
-        nameCol.setCellValueFactory(
-                new PropertyValueFactory<>("name")
-        );
-
-        priorityCol.setCellValueFactory(
-                new PropertyValueFactory<>("priority")
-        );
+        setTableColumns(backlogTable, nameCol, priorityCol, effortCol, timeCol, riskCol);
 
         UnaryOperator<TextFormatter.Change> priorityFilter = change -> {
             String text = change.getControlNewText();
@@ -107,10 +94,6 @@ public class BacklogController extends BaseController {
         };
 
         priorityField.setTextFormatter(new TextFormatter<>(priorityFilter));
-
-        effortCol.setCellValueFactory(
-                new PropertyValueFactory<>("effort")
-        );
 
         UnaryOperator<TextFormatter.Change> effortFilter = change -> {
             String text = change.getControlNewText();
@@ -130,10 +113,6 @@ public class BacklogController extends BaseController {
 
         effortField.setTextFormatter(new TextFormatter<>(effortFilter));
 
-        timeCol.setCellValueFactory(
-                new PropertyValueFactory<>("time")
-        );
-
         UnaryOperator<TextFormatter.Change> timeFilter = change -> {
             String text = change.getControlNewText();
 
@@ -152,28 +131,6 @@ public class BacklogController extends BaseController {
 
         timeField.setTextFormatter(new TextFormatter<>(timeFilter));
 
-        riskCol.setCellValueFactory(
-                new PropertyValueFactory<>("risk")
-        );
-
-        // This will ensure that any negative risk values (risk not specified)
-        // will appear as 'N/A' on the actual table
-        riskCol.setCellFactory(col -> new TableCell<>() {
-            @Override
-            protected void updateItem(Float value, boolean empty) {
-                super.updateItem(value, empty);
-                if (empty || value == null) {
-                    setText("");
-                }
-                else if (value == -1f) {
-                    setText("N/A");
-                }
-                else {
-                    setText(String.format("%.2f", value));
-                }
-            }
-        });
-
         UnaryOperator<TextFormatter.Change> riskFilter = change -> {
             String text = change.getControlNewText();
 
@@ -191,61 +148,6 @@ public class BacklogController extends BaseController {
         };
 
         riskField.setTextFormatter(new TextFormatter<>(riskFilter));
-
-        /**
-         * Initialize a pop-up to appear when a task is hovered over for one second. This popup showcases
-         * the task's story, task, priority, effort and risk in that order. Cascades text to ensure the popup
-         * doesn't get too our of hand.
-         **/
-        backlogTable.setRowFactory(tv -> {
-            TableRow<Item> row = new TableRow<>();
-            Tooltip tooltip = new Tooltip();
-            tooltip.setWrapText(true);
-            tooltip.setMaxWidth(300);
-            PauseTransition delay = new PauseTransition(Duration.seconds(0.75));
-
-            row.setOnMouseEntered(event -> {
-                if (row.isEmpty() || row.getItem() == null) {
-                    return;
-                }
-
-                Item item = row.getItem();
-
-                tooltip.setText(
-                        "Story:\n" + item.getStory() + "\n\n" +
-                                "Task:\n" + item.getTask() + "\n\n" +
-                                "Priority: " + item.getPriority() + "\n" +
-                                "Effort: " + item.getEffort() + "\n" +
-                                "Risk: " + item.getRisk()
-                );
-
-                delay.setOnFinished(e -> {
-                    if (row.isHover() && !row.isEmpty()) {
-                        tooltip.show(
-                                row,
-                                event.getScreenX() + 10,
-                                event.getScreenY() + 10
-                        );
-                    }
-                });
-
-                delay.playFromStart();
-            });
-
-            row.setOnMouseExited(event -> {
-                delay.stop();
-                tooltip.hide();
-            });
-
-            row.setOnMouseMoved(event -> {
-                if (tooltip.isShowing()) {
-                    tooltip.setX(event.getScreenX() + 10);
-                    tooltip.setY(event.getScreenY() + 10);
-                }
-            });
-
-            return row;
-        });
     }
 
     /**
