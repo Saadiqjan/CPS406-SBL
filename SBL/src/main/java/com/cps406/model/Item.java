@@ -9,7 +9,7 @@ package com.cps406.model;
 import java.util.ArrayList;
 import java.io.Serializable;
 
-public class Item implements Serializable {
+public class Item implements Comparable<Item>, Serializable {
     private static final long serialVersionUID = 1L;
 
     // Store item details
@@ -90,5 +90,10 @@ public class Item implements Serializable {
     // Remove task by task name
     public void removeTask(String taskName) {
         tasks.removeIf(task -> task.getName().equals(taskName));
+    }
+
+    @Override
+    public int compareTo(Item o) {
+        return this.priority - o.getPriority();
     }
 }
