@@ -46,6 +46,7 @@
     </HBox>
     <ButtonBar layoutY="566.0" prefHeight="40.0" prefWidth="995.0">
         <buttons>
+         <Button mnemonicParsing="false" onAction="#generateSprint" text="Generate Sprint" />
             <Button fx:id="createSprintButton" mnemonicParsing="false" prefHeight="26.0" prefWidth="502.0" text="Create Sprint" />
             <Button fx:id="cancelButton" mnemonicParsing="false" onAction="#goToDashboard" prefHeight="25.0" prefWidth="280.0" text="Cancel" />
         </buttons>
