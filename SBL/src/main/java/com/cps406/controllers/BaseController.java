@@ -33,7 +33,15 @@ public class BaseController {
         this.appState = appState;
     }
 
-    // Set up table columns
+    /**
+     * this method will initialize a backlog table and its columns
+     * @param backlogTable the table
+     * @param nameCol requirement name column
+     * @param priorityCol priority column
+     * @param effortCol effort column
+     * @param timeCol time column
+     * @param riskCol risk column
+     */
     protected void setTableColumns(TableView<Item> backlogTable,
                                    TableColumn<Item, String> nameCol,
                                    TableColumn<Item, Integer> priorityCol,
