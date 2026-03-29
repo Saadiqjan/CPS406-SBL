@@ -3,23 +3,34 @@
 
 package com.cps406.controllers;
 
+import com.cps406.AppState;
 import com.cps406.model.Item;
+import com.cps406.model.SprintManager;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.TableCell;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.lang.reflect.Array;
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 public class CreateSprintController extends BaseController {
+    // Store labels
+    @FXML
+    private Label capacityLabel;
+
+    // Store text fields
+    @FXML
+    private TextField durationField;
+
+    @FXML
+    private TextField numDevField;
 
     // Store the columns in the product backlog table
     @FXML
@@ -66,6 +77,24 @@ public class CreateSprintController extends BaseController {
     private void initialize() {
         setTableColumns(pbTable, pbNameCol, pbPriorityCol, pbEffortCol, pbTimeCol, pbRiskCol);
         setTableColumns(sbTable, sbNameCol, sbPriorityCol, sbEffortCol, sbTimeCol, sbRiskCol);
+
+        numDevField.textProperty().addListener((obs, old, newVal) -> {
+            updateCapacity(newVal);
+        });
+    }
+
+    private void updateCapacity(String newCap) {
+        int capacity = 0;
+
+        try {
+            capacity = Integer.parseInt(newCap);
+            capacity *= 12;
+
+            capacityLabel.setText("Capacity 0/" + capacity);
+        }
+        catch (NumberFormatException nfe) {
+            nfe.printStackTrace();
+        }
     }
 
     /**
@@ -86,6 +115,34 @@ public class CreateSprintController extends BaseController {
     }
 
     @FXML
+    private void createSprint(ActionEvent event) {
+        SprintManager sm = appState.getSprintManager();
+        ArrayList<Item> selectedItems = new ArrayList<Item>(sbTable.getItems());
+        int duration = 0;
+        int capacity = 0;
+
+        try {
+            duration = Integer.parseInt(durationField.getText());
+            capacity = Integer.parseInt(numDevField.getText()) * 12;
+
+            sm.createSprint(capacity, LocalDate.now().plusWeeks(duration), appState.getProductBacklog(), selectedItems);
+
+            goToSprint(event);
+        }
+        catch (NumberFormatException nfe) {
+
+        }
+        catch (IOException ioe) {
+
+        }
+    }
+
+    @FXML
+    private void clearSprintTable() {
+
+    }
+
+    @FXML
     private void goToDashboard(ActionEvent event) throws IOException {
         // Load dashboard scene
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/cps406/Dashboard.fxml"));
@@ -101,5 +158,29 @@ public class CreateSprintController extends BaseController {
         scene.getStylesheets().add(getClass().getResource("/com/cps406/styles.css").toExternalForm());
         stage.setScene(scene);
         stage.show();
+    }
+
+    private void goToSprint(ActionEvent event) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/cps406/Sprint.fxml"));
+        root = loader.load();
+
+        SprintController sc = loader.getController();
+        sc.setAppState(appState);
+
+        stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        scene = new Scene(root);
+        scene.getStylesheets().add(getClass().getResource("/com/cps406/styles.css").toExternalForm());
+        stage.setScene(scene);
+        stage.show();
+    }
+
+    @Override
+    public void setAppState(AppState appState) {
+        super.setAppState(appState);
+
+        // Add any existing backlog items to the backlog table
+        for (Item item : appState.getProductBacklog().getBacklog()) {
+            pbTable.getItems().add(item);
+        }
     }
 }

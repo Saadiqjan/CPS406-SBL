@@ -48,13 +48,13 @@
    <center>
       <ScrollPane prefHeight="400.0" prefWidth="545.0" BorderPane.alignment="CENTER">
          <content>
-            <TableView prefHeight="331.0" prefWidth="431.0" stylesheets="@styles.css">
+            <TableView fx:id="sprintTable" prefHeight="331.0" prefWidth="431.0" stylesheets="@styles.css">
               <columns>
-                <TableColumn prefWidth="75.0" text="Requirement" />
-                  <TableColumn prefWidth="75.0" text="Priority" />
-                  <TableColumn prefWidth="75.0" text="Effort" />
-                  <TableColumn prefWidth="75.0" text="Time Estimate" />
-                  <TableColumn prefWidth="75.0" text="Risk" />
+                <TableColumn fx:id="nameCol" prefWidth="75.0" text="Requirement" />
+                  <TableColumn fx:id="priorityCol" prefWidth="75.0" text="Priority" />
+                  <TableColumn fx:id="effortCol" prefWidth="75.0" text="Effort" />
+                  <TableColumn fx:id="timeCol" prefWidth="75.0" text="Time Estimate" />
+                  <TableColumn fx:id="riskCol" prefWidth="75.0" text="Risk" />
               </columns>
                <columnResizePolicy>
                   <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />

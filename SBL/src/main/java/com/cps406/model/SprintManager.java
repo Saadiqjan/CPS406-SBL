@@ -1,7 +1,7 @@
-// Author: Saadiq Shahsamand
+// Author: Saadiq Shahsamand, Harjap Uppal
 // Filename: SprintManager.java
 // Date Created: Mar 20 2026
-// Date Modified: Mar 24
+// Date Modified: Mar 28
 // Description: Manages the current sprint and stores previous sprints
 //              also responsible for creating and finishing sprints
 

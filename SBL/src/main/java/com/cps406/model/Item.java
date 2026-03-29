@@ -1,7 +1,7 @@
 // Author: Saadiq Shahsamand, Ali Zarabi
 // Filename: Item.java
 // Date Created: Mar 19 2026
-// Date Modified:
+// Date Modified: Mar 28 2026
 // Description: Encapsulate a single item on a product backlog
 
 package com.cps406.model;
@@ -94,6 +94,6 @@ public class Item implements Comparable<Item>, Serializable {
 
     @Override
     public int compareTo(Item o) {
-        return this.priority - o.getPriority();
+        return o.getPriority() - this.priority;
     }
 }

@@ -6,13 +6,14 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
 <AnchorPane prefHeight="606.0" prefWidth="960.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.cps406.controllers.CreateSprintController">
     <Label layoutX="20" layoutY="20" style="-fx-font-size: 18px; -fx-font-weight: bold;" text="Create Sprint" />
-    <HBox layoutX="56.0" layoutY="60.0" prefHeight="480" prefWidth="939.0" spacing="20">
+    <HBox layoutX="56.0" layoutY="60.0" prefHeight="466.0" prefWidth="939.0" spacing="20">
         <VBox prefHeight="480.0" prefWidth="430.0" spacing="10">
             <Label text="Product Backlog Items:" />
             <TableView fx:id="pbTable" prefHeight="452.0" prefWidth="430.0">
@@ -29,7 +30,16 @@
             </TableView>
         </VBox>
         <VBox spacing="10">
-            <Label text="Selected Items for Sprint:" />
+         <HBox prefHeight="20.0" prefWidth="430.0">
+            <children>
+                  <Label prefHeight="18.0" prefWidth="142.0" text="Selected Items for Sprint:" />
+               <Label fx:id="capacityLabel" prefHeight="18.0" prefWidth="286.0" text="Capacity: 0/0">
+                  <padding>
+                     <Insets left="200.0" />
+                  </padding>
+               </Label>
+            </children>
+         </HBox>
             <TableView fx:id="sbTable" prefHeight="460.0" prefWidth="430.0">
                 <columns>
                     <TableColumn fx:id="sbNameCol" prefWidth="75.0" text="Requirement" />
@@ -44,10 +54,26 @@
             </TableView>
         </VBox>
     </HBox>
+   <HBox layoutX="20.0" layoutY="538.0" prefHeight="27.0" prefWidth="954.0">
+      <children>
+         <Label prefHeight="39.0" prefWidth="90.0" text="Sprint Duration" />
+         <TextField fx:id="durationField" />
+         <Label prefHeight="27.0" prefWidth="149.0" text="Number of Developers">
+            <padding>
+               <Insets left="20.0" />
+            </padding>
+            <HBox.margin>
+               <Insets />
+            </HBox.margin>
+         </Label>
+         <TextField fx:id="numDevField" />
+      </children>
+   </HBox>
     <ButtonBar layoutY="566.0" prefHeight="40.0" prefWidth="995.0">
         <buttons>
+         <Button mnemonicParsing="false" onAction="#clearSprintTable" text="Clear Sprint Table" />
          <Button mnemonicParsing="false" onAction="#generateSprint" text="Generate Sprint" />
-            <Button fx:id="createSprintButton" mnemonicParsing="false" prefHeight="26.0" prefWidth="502.0" text="Create Sprint" />
+            <Button fx:id="createSprintButton" mnemonicParsing="false" onAction="#createSprint" prefHeight="26.0" prefWidth="502.0" text="Create Sprint" />
             <Button fx:id="cancelButton" mnemonicParsing="false" onAction="#goToDashboard" prefHeight="25.0" prefWidth="280.0" text="Cancel" />
         </buttons>
         <padding>
