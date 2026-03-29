@@ -1,5 +1,10 @@
+// Authors: Saadiq Shahsamand
 // Filename: CreateSprintController.java
 // Date Created: Mar 24 2026
+// Date Modified: Mar 29 2026
+// Description: Controller for sprint creation scene.
+//              Lets you generate a list for the upcoming sprint
+//              and allows for modification of that list before approval
 
 package com.cps406.controllers;
 
@@ -93,16 +98,24 @@ public class CreateSprintController extends BaseController {
      */
     @FXML
     private void initialize() {
+        // Set table lists to the two tables
         pbTable.setItems(pbItems);
         sbTable.setItems(sbItems);
 
+        // Set the table columns
         setTableColumns(pbTable, pbNameCol, pbPriorityCol, pbEffortCol, pbTimeCol, pbRiskCol);
         setTableColumns(sbTable, sbNameCol, sbPriorityCol, sbEffortCol, sbTimeCol, sbRiskCol);
 
+        // Set the add and remove column values to the row it is in itself
+        // This is necessary for retrieving the row when the add or remove button is pressed
         addCol.setCellValueFactory(data ->
                 new SimpleObjectProperty<>(data.getValue())
         );
+        removeCol.setCellValueFactory(data ->
+                new SimpleObjectProperty<>(data.getValue())
+        );
 
+        // Create a
         addCol.setCellFactory(col -> new TableCell<>() {
             private final Button btn = new Button("+");
 
@@ -119,10 +132,6 @@ public class CreateSprintController extends BaseController {
                 setGraphic(empty ? null : btn);
             }
         });
-
-        removeCol.setCellValueFactory(data ->
-                new SimpleObjectProperty<>(data.getValue())
-        );
 
         removeCol.setCellFactory(col -> new TableCell<>() {
             private final Button btn = new Button("×");
@@ -141,29 +150,46 @@ public class CreateSprintController extends BaseController {
             }
         });
 
+        // Add listeners to the number of devs and duration textfields
+        // These listeners will recalculate the sprint capacity when either is changed
         numDevField.textProperty().addListener((obs, old, newVal) -> {
             updateCapacity(numDevField, newVal);
         });
-
         durationField.textProperty().addListener((obs, old, newVal) -> {
             updateCapacity(durationField, newVal);
         });
     }
 
+    /**
+     * Update the total time of the sprint table
+     */
     private void updateTotalTime() {
+        // Reset total time
         totalTime = 0.0f;
 
-        for (Item item : sbTable.getItems()) {
+        // for each item add its time to the total
+        for (Item item : sbItems) {
             totalTime += item.getTime();
         }
 
+        // Set the capacity label to match this
         capacityLabel.setText("Capacity " + totalTime + "/" + capacity);
     }
 
+    /**
+     * update the capacity of the sprint
+     * @param source which textfield the new value came from
+     * @param newVal the new value in the textfield
+     */
     private void updateCapacity(TextField source, String newVal) {
         try {
+            // Start with the new value
             capacity = Integer.parseInt(newVal);
 
+            // multiply by the value from the unchanged field and multiply by 30
+            // if you are wondering why 30:
+            // Capacity = # of devs * # of working hours
+            // We assume 30 working hours in a work week to account for overhead, that's 6/8 hours a day
             if (source == numDevField) {
                 capacity *= Integer.parseInt(durationField.getText()) * 30;
             }
@@ -171,21 +197,38 @@ public class CreateSprintController extends BaseController {
                 capacity *= Integer.parseInt(numDevField.getText()) * 30;
             }
 
+            // Update the capacity label to match
             capacityLabel.setText("Capacity " + totalTime + "/" + capacity);
         }
         catch (NumberFormatException nfe) {
+            // TODO: replace with more robust logging
             nfe.printStackTrace();
         }
     }
 
+    /**
+     * move an item from the product backlog to the sprint backlog
+     * @param item to be added
+     */
     private void addToSprint(Item item) {
+        // Prevent removing an item that isnt there
+        // If remove fails and add doesnt it will lead to the creation or duplication of an item
         if (!pbItems.contains(item)) return;
+
+        // Move the item
         pbItems.remove(item);
         sbItems.add(item);
+
+        // Updaye the total time to match
         updateTotalTime();
     }
 
+    /**
+     * move an item from the sprint backlog back to the product backlog
+     * @param item to be removed
+     */
     private void removeFromSprint(Item item) {
+        // Similar to above
         if (!sbItems.contains(item)) return;
         sbItems.remove(item);
         pbItems.add(item);
@@ -197,46 +240,48 @@ public class CreateSprintController extends BaseController {
      */
     @FXML
     private void generateSprint() {
-        totalTime = 0.0f;
-
         // Generate list of sprint items
         ArrayList<Item> sprintList = appState.getSprintManager().generateSprintBacklog(
                 appState.getProductBacklog().getBacklog(),
                 capacity
         );
 
-        // Add sprint items to the sprint backlog table
-        sbTable.getItems().clear();
-        for (Item sprintItem : sprintList) {
-            sbTable.getItems().add(sprintItem);
-            totalTime += sprintItem.getTime();
-        }
+        // Clear current sprint back to PB first
+        pbItems.addAll(sbItems);
+        sbItems.clear();
 
-        // Update the backlog
-        pbTable.getItems().clear();
-        for (Item item : appState.getProductBacklog().getBacklog()) {
-            if (!sprintList.contains(item)) {
-                pbTable.getItems().add(item);
-            }
-        }
+        // Move generated items from PB to sprint
+        sprintList.forEach(item -> {
+            pbItems.remove(item);
+            sbItems.add(item);
+        });
 
         // Update capacity label
-        capacityLabel.setText("Capacity " + totalTime + "/" + capacity);
+        updateTotalTime();
     }
 
+    /**
+     * create the sprint
+     * @param event
+     */
     @FXML
     private void createSprint(ActionEvent event) {
+        // Retrieve the sprint manager and the items selected for the sprint
         SprintManager sm = appState.getSprintManager();
-        ArrayList<Item> selectedItems = new ArrayList<Item>(sbTable.getItems());
+        ArrayList<Item> selectedItems = new ArrayList<>(sbItems);
         int duration = 0;
 
+        // Prevent the creation of a sprint with no items
         if (selectedItems.isEmpty()) {
             return;
         }
 
         try {
+            // Retrieve the duration of the sprint
             duration = Integer.parseInt(durationField.getText());
 
+            // Create a new sprint
+            // If the creation was successful, switch to the sprint scene
             if (sm.createSprint(capacity, LocalDate.now().plusWeeks(duration), appState.getProductBacklog(), selectedItems)) {
                 goToSprint(event);
             }
@@ -249,16 +294,23 @@ public class CreateSprintController extends BaseController {
         }
     }
 
+    /**
+     * Clear the sprint table
+     */
     @FXML
     private void clearSprintTable() {
-        for (Item item : sbTable.getItems()) {
-            pbTable.getItems().add(item);
-        }
+        // Remove every item in the table
+        new ArrayList<>(sbItems).forEach(item -> removeFromSprint(item));
 
-        sbTable.getItems().clear();
-        capacityLabel.setText("Capacity 0/" + capacity);
+        // Update total time to match
+        updateTotalTime();
     }
 
+    /**
+     * Go to dashboard
+     * @param event
+     * @throws IOException if IO fails
+     */
     @FXML
     private void goToDashboard(ActionEvent event) throws IOException {
         // Load dashboard scene
@@ -277,13 +329,21 @@ public class CreateSprintController extends BaseController {
         stage.show();
     }
 
+    /**
+     * Go to sprint
+     * @param event
+     * @throws IOException if IO fails
+     */
     private void goToSprint(ActionEvent event) throws IOException {
+        // Load sprint scene
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/cps406/Sprint.fxml"));
         root = loader.load();
 
+        // Set the app state of the controller for the sprint scene
         SprintController sc = loader.getController();
         sc.setAppState(appState);
 
+        // Create and set the scene
         stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         scene = new Scene(root);
         scene.getStylesheets().add(getClass().getResource("/com/cps406/styles.css").toExternalForm());
@@ -291,6 +351,10 @@ public class CreateSprintController extends BaseController {
         stage.show();
     }
 
+    /**
+     * Set the appstate
+     * @param appState
+     */
     @Override
     public void setAppState(AppState appState) {
         super.setAppState(appState);
