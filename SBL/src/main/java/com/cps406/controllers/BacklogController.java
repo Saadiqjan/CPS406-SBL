@@ -209,18 +209,20 @@ public class BacklogController extends BaseController {
             riskField.clear();
         }
         catch (NumberFormatException nfe) {
+            // Create and setup alert
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Invalid Input");
             alert.setHeaderText("Incorrect Number Format");
             alert.setContentText("Please ensure all numeric fields are filled correctly:\n" +
-            "- Priority: integer (1–3)\n" +
-            "- Effort: number (1–5)\n" +
+            "- Priority: integer (1-3)\n" +
+            "- Effort: number (1-5)\n" +
             "- Time: positive number\n" +
-            "- Risk: number (1–5, optional)");
+            "- Risk: number (1-5, optional)");
 
             alert.showAndWait();
         }
         catch (RuntimeException re) {
+            // Create setup alert
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error Adding Item");
             alert.setHeaderText("Could not add backlog item");
@@ -230,22 +232,33 @@ public class BacklogController extends BaseController {
         }
     }
 
+    /**
+     * Clear all items from the product backlog after user confirms
+     * @param event
+     */
     @FXML
     private void clearBacklog(ActionEvent event) {
+        // retrieve the current backlog
         ProductBacklog pb = appState.getProductBacklog();
 
+        // make sure backlog is not empty
         if (pb.getBacklog().size() != 0) {
+
+            // create a confirmation alert to warn the user
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setTitle("Confirm Backlog Clear");
             alert.setHeaderText("Deleting all backlog items");
             alert.setContentText("Items will not be recoverable. Proceed?");
 
+            // create button options
             ButtonType yesButton = new ButtonType("Yes");
             ButtonType cancelButton = new ButtonType("No");
 
+            // set buttons in the alert and show the alert
             alert.getButtonTypes().setAll(yesButton, cancelButton);
             Optional<ButtonType> result = alert.showAndWait();
 
+            // if the user confirms, clear backlog data and update UI
             if (result.isPresent() && result.get() == yesButton) {
                 appState.getProductBacklog().clearBacklog();
                 backlogTable.getItems().clear();
