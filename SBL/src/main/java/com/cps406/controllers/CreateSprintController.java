@@ -6,6 +6,10 @@ package com.cps406.controllers;
 import com.cps406.AppState;
 import com.cps406.model.Item;
 import com.cps406.model.SprintManager;
+import javafx.application.Platform;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -51,6 +55,9 @@ public class CreateSprintController extends BaseController {
     @FXML
     private TableColumn<Item, Float> pbRiskCol;
 
+    @FXML
+    private TableColumn<Item, Item> addCol;
+
     // Store the columns in the sprint backlog table
     @FXML
     private TableView<Item> sbTable;
@@ -70,16 +77,69 @@ public class CreateSprintController extends BaseController {
     @FXML
     private TableColumn<Item, Float> sbRiskCol;
 
+    @FXML
+    private TableColumn<Item, Item> removeCol;
+
     // Store capacity (to avoid recalculation
     int capacity = 0;
+    float totalTime = 0.0f;
+
+    //Store table lists
+    ObservableList<Item> pbItems = FXCollections.observableArrayList();
+    ObservableList<Item> sbItems    = FXCollections.observableArrayList();
 
     /**
      * initialize cell values of each cell in the backlog table
      */
     @FXML
     private void initialize() {
+        pbTable.setItems(pbItems);
+        sbTable.setItems(sbItems);
+
         setTableColumns(pbTable, pbNameCol, pbPriorityCol, pbEffortCol, pbTimeCol, pbRiskCol);
         setTableColumns(sbTable, sbNameCol, sbPriorityCol, sbEffortCol, sbTimeCol, sbRiskCol);
+
+        addCol.setCellValueFactory(data ->
+                new SimpleObjectProperty<>(data.getValue())
+        );
+
+        addCol.setCellFactory(col -> new TableCell<>() {
+            private final Button btn = new Button("+");
+
+            {
+                btn.setOnAction(e -> {
+                    Item item = getItem();
+                    Platform.runLater(() -> addToSprint(item));
+                });
+            }
+
+            @Override
+            protected void updateItem(Item item, boolean empty) {
+                super.updateItem(item, empty);
+                setGraphic(empty ? null : btn);
+            }
+        });
+
+        removeCol.setCellValueFactory(data ->
+                new SimpleObjectProperty<>(data.getValue())
+        );
+
+        removeCol.setCellFactory(col -> new TableCell<>() {
+            private final Button btn = new Button("×");
+
+            {
+                btn.setOnAction(e -> {
+                    Item item = getItem();
+                    Platform.runLater(() -> removeFromSprint(item));
+                });
+            }
+
+            @Override
+            protected void updateItem(Item item, boolean empty) {
+                super.updateItem(item, empty);
+                setGraphic(empty ? null : btn);
+            }
+        });
 
         numDevField.textProperty().addListener((obs, old, newVal) -> {
             updateCapacity(numDevField, newVal);
@@ -88,6 +148,16 @@ public class CreateSprintController extends BaseController {
         durationField.textProperty().addListener((obs, old, newVal) -> {
             updateCapacity(durationField, newVal);
         });
+    }
+
+    private void updateTotalTime() {
+        totalTime = 0.0f;
+
+        for (Item item : sbTable.getItems()) {
+            totalTime += item.getTime();
+        }
+
+        capacityLabel.setText("Capacity " + totalTime + "/" + capacity);
     }
 
     private void updateCapacity(TextField source, String newVal) {
@@ -101,11 +171,25 @@ public class CreateSprintController extends BaseController {
                 capacity *= Integer.parseInt(numDevField.getText()) * 30;
             }
 
-            capacityLabel.setText("Capacity 0/" + capacity);
+            capacityLabel.setText("Capacity " + totalTime + "/" + capacity);
         }
         catch (NumberFormatException nfe) {
             nfe.printStackTrace();
         }
+    }
+
+    private void addToSprint(Item item) {
+        if (!pbItems.contains(item)) return;
+        pbItems.remove(item);
+        sbItems.add(item);
+        updateTotalTime();
+    }
+
+    private void removeFromSprint(Item item) {
+        if (!sbItems.contains(item)) return;
+        sbItems.remove(item);
+        pbItems.add(item);
+        updateTotalTime();
     }
 
     /**
@@ -113,7 +197,7 @@ public class CreateSprintController extends BaseController {
      */
     @FXML
     private void generateSprint() {
-        float totalTime = 0.0f;
+        totalTime = 0.0f;
 
         // Generate list of sprint items
         ArrayList<Item> sprintList = appState.getSprintManager().generateSprintBacklog(
