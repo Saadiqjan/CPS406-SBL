@@ -70,6 +70,9 @@ public class CreateSprintController extends BaseController {
     @FXML
     private TableColumn<Item, Float> sbRiskCol;
 
+    // Store capacity (to avoid recalculation
+    int capacity = 0;
+
     /**
      * initialize cell values of each cell in the backlog table
      */
@@ -79,16 +82,24 @@ public class CreateSprintController extends BaseController {
         setTableColumns(sbTable, sbNameCol, sbPriorityCol, sbEffortCol, sbTimeCol, sbRiskCol);
 
         numDevField.textProperty().addListener((obs, old, newVal) -> {
-            updateCapacity(newVal);
+            updateCapacity(numDevField, newVal);
+        });
+
+        durationField.textProperty().addListener((obs, old, newVal) -> {
+            updateCapacity(durationField, newVal);
         });
     }
 
-    private void updateCapacity(String newCap) {
-        int capacity = 0;
-
+    private void updateCapacity(TextField source, String newVal) {
         try {
-            capacity = Integer.parseInt(newCap);
-            capacity *= 12;
+            capacity = Integer.parseInt(newVal);
+
+            if (source == numDevField) {
+                capacity *= Integer.parseInt(durationField.getText()) * 30;
+            }
+            else if (source == durationField) {
+                capacity *= Integer.parseInt(numDevField.getText()) * 30;
+            }
 
             capacityLabel.setText("Capacity 0/" + capacity);
         }
@@ -102,16 +113,22 @@ public class CreateSprintController extends BaseController {
      */
     @FXML
     private void generateSprint() {
+        float totalTime = 0.0f;
+
         // Generate list of sprint items
         ArrayList<Item> sprintList = appState.getSprintManager().generateSprintBacklog(
                 appState.getProductBacklog().getBacklog(),
-                20
+                capacity
         );
 
         // Add sprint items to the sprint backlog table
         for (Item sprintItem : sprintList) {
             sbTable.getItems().add(sprintItem);
+            totalTime += sprintItem.getTime();
         }
+
+        // Update capacity label
+        capacityLabel.setText("Capacity " + totalTime + "/" + capacity);
     }
 
     @FXML
@@ -119,15 +136,17 @@ public class CreateSprintController extends BaseController {
         SprintManager sm = appState.getSprintManager();
         ArrayList<Item> selectedItems = new ArrayList<Item>(sbTable.getItems());
         int duration = 0;
-        int capacity = 0;
+
+        if (selectedItems.isEmpty()) {
+            return;
+        }
 
         try {
             duration = Integer.parseInt(durationField.getText());
-            capacity = Integer.parseInt(numDevField.getText()) * 12;
 
-            sm.createSprint(capacity, LocalDate.now().plusWeeks(duration), appState.getProductBacklog(), selectedItems);
-
-            goToSprint(event);
+            if (sm.createSprint(capacity, LocalDate.now().plusWeeks(duration), appState.getProductBacklog(), selectedItems)) {
+                goToSprint(event);
+            }
         }
         catch (NumberFormatException nfe) {
 
@@ -139,7 +158,8 @@ public class CreateSprintController extends BaseController {
 
     @FXML
     private void clearSprintTable() {
-
+        sbTable.getItems().clear();
+        capacityLabel.setText("Capacity 0/" + capacity);
     }
 
     @FXML

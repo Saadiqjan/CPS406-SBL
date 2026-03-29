@@ -95,22 +95,20 @@ public class SprintManager {
         ArrayList<Item> sprintList = new ArrayList<Item>();
 
         // Store total effort
-        float totalEffort = 0;
-        float curEffort = 0;
+        float totalTime = 0;
+        float curTime = 0;
 
         // Sort list based on priority
         Collections.sort(productBacklog);
 
         // Add items to sprint list until capacity is exceeded
         for (int i = 0; i < productBacklog.toArray().length; i++) {
-            curEffort = productBacklog.get(i).getEffort();
+            curTime = productBacklog.get(i).getTime();
 
-            if (totalEffort + curEffort < capacity) {
-                totalEffort += curEffort;
+            if (totalTime + curTime < capacity) {
+                totalTime += curTime;
 
                 sprintList.add(productBacklog.get(i));
-            } else {
-                break;
             }
         }
 
