@@ -209,10 +209,24 @@ public class BacklogController extends BaseController {
             riskField.clear();
         }
         catch (NumberFormatException nfe) {
-            // TODO: display error message to user
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Invalid Input");
+            alert.setHeaderText("Incorrect Number Format");
+            alert.setContentText("Please ensure all numeric fields are filled correctly:\n" +
+            "- Priority: integer (1–3)\n" +
+            "- Effort: number (1–5)\n" +
+            "- Time: positive number\n" +
+            "- Risk: number (1–5, optional)");
+
+            alert.showAndWait();
         }
         catch (RuntimeException re) {
-            // TODO: same here
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error Adding Item");
+            alert.setHeaderText("Could not add backlog item");
+            alert.setContentText(re.getMessage());
+
+            alert.showAndWait();
         }
     }
 
