@@ -122,9 +122,18 @@ public class CreateSprintController extends BaseController {
         );
 
         // Add sprint items to the sprint backlog table
+        sbTable.getItems().clear();
         for (Item sprintItem : sprintList) {
             sbTable.getItems().add(sprintItem);
             totalTime += sprintItem.getTime();
+        }
+
+        // Update the backlog
+        pbTable.getItems().clear();
+        for (Item item : appState.getProductBacklog().getBacklog()) {
+            if (!sprintList.contains(item)) {
+                pbTable.getItems().add(item);
+            }
         }
 
         // Update capacity label
@@ -158,6 +167,10 @@ public class CreateSprintController extends BaseController {
 
     @FXML
     private void clearSprintTable() {
+        for (Item item : sbTable.getItems()) {
+            pbTable.getItems().add(item);
+        }
+
         sbTable.getItems().clear();
         capacityLabel.setText("Capacity 0/" + capacity);
     }
