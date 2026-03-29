@@ -173,7 +173,7 @@ public class CreateSprintController extends BaseController {
         }
 
         // Set the capacity label to match this
-        capacityLabel.setText("Capacity " + totalTime + "/" + capacity);
+        capacityLabel.setText("Capacity " + String.format("%.2f", totalTime)  + "/" + capacity);
     }
 
     /**
@@ -198,7 +198,7 @@ public class CreateSprintController extends BaseController {
             }
 
             // Update the capacity label to match
-            capacityLabel.setText("Capacity " + totalTime + "/" + capacity);
+            capacityLabel.setText("Capacity " + String.format("%.2f", totalTime) + "/" + capacity);
         }
         catch (NumberFormatException nfe) {
             // TODO: replace with more robust logging
