@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.chart.CategoryAxis?>
 <?import javafx.scene.chart.LineChart?>
 <?import javafx.scene.chart.NumberAxis?>
@@ -7,25 +8,26 @@
 <?import javafx.scene.control.ButtonBar?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ProgressBar?>
-<?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="601.0" styleClass="subtitle-label" stylesheets="@styles.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.cps406.controllers.DashboardController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" styleClass="subtitle-label" stylesheets="@styles.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.cps406.controllers.DashboardController">
    <top>
-      <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="32.0" prefWidth="603.0" stylesheets="@styles.css" text="Dashboard" BorderPane.alignment="CENTER_LEFT" />
+      <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="31.0" prefWidth="104.0" stylesheets="@styles.css" text="Dashboard" BorderPane.alignment="CENTER_LEFT" />
    </top>
    <bottom>
-      <ButtonBar prefHeight="40.0" prefWidth="200.0" styleClass="accent-label" stylesheets="@styles.css" BorderPane.alignment="CENTER">
+      <ButtonBar prefHeight="40.0" prefWidth="602.0" styleClass="accent-label" stylesheets="@styles.css" BorderPane.alignment="CENTER">
         <buttons>
-          <Button mnemonicParsing="false" onAction="#goToBacklog" prefHeight="35.0" prefWidth="515.0" stylesheets="@styles.css" text="Product Backlog" textAlignment="CENTER" />
+          <Button mnemonicParsing="false" onAction="#goToBacklog" prefHeight="14.0" prefWidth="515.0" stylesheets="@styles.css" text="Product Backlog" textAlignment="CENTER" />
             <Button mnemonicParsing="false" onAction="#goToSprint" stylesheets="@styles.css" text="Current Sprint" textAlignment="CENTER" />
         </buttons>
       </ButtonBar>
    </bottom>
    <center>
-      <SplitPane dividerPositions="0.5" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0" BorderPane.alignment="CENTER">
-         <items>
-            <LineChart styleClass="combo-box" stylesheets="@styles.css">
+      <VBox prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
+         <children>
+            <LineChart prefHeight="481.0" prefWidth="800.0" styleClass="combo-box" stylesheets="@styles.css">
               <xAxis>
                 <CategoryAxis side="BOTTOM" />
               </xAxis>
@@ -33,8 +35,22 @@
                 <NumberAxis side="LEFT" stylesheets="@styles.css" />
               </yAxis>
             </LineChart>
-            <ProgressBar prefHeight="18.0" prefWidth="460.0" progress="0.0" />
-         </items>
-      </SplitPane>
+            <HBox prefHeight="50.0" prefWidth="800.0">
+               <children>
+                  <Label prefHeight="49.0" prefWidth="122.0" text="Sprint Progress">
+                     <HBox.margin>
+                        <Insets left="15.0" />
+                     </HBox.margin>
+                  </Label>
+                  <ProgressBar fx:id="sprintProgress" prefHeight="49.0" prefWidth="612.0" progress="0.0">
+                     <padding>
+                        <Insets bottom="10.0" left="15.0" right="15.0" top="10.0" />
+                     </padding>
+                  </ProgressBar>
+                  <Label prefHeight="49.0" prefWidth="46.0" text="0%" />
+               </children>
+            </HBox>
+         </children>
+      </VBox>
    </center>
 </BorderPane>
