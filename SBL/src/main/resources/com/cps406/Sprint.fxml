@@ -42,6 +42,7 @@
                   <TextField />
                </children>
             </HBox>
+            <Button mnemonicParsing="false" onAction="#handleFinishSprint" prefHeight="33.0" prefWidth="169.0" text="Complete Sprint" />
          </children>
       </VBox>
    </right>

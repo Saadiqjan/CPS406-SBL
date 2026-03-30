@@ -22,7 +22,7 @@ public class Item implements Comparable<Item>, Serializable {
     private float risk;
 
     // Store item status
-    private Status status;
+    //private Status status;
     private boolean complete;
 
     // Store related engineering tasks
@@ -49,13 +49,12 @@ public class Item implements Comparable<Item>, Serializable {
         this.risk = risk;
 
         // Set status
-        status = Status.TODO;
+        //status = Status.TODO;
 
         // Set up list of engineering tasks related to the item
         tasks = new ArrayList<Task>();
 
         // Set completion status
-        // Note: likely to be removed, kind of redundant when status enum exists
         complete = false;
     }
 
@@ -67,7 +66,7 @@ public class Item implements Comparable<Item>, Serializable {
     public float getEffort() { return effort; }
     public float getTime() { return time; }
     public float getRisk() { return risk; }
-    public Status getStatus() { return status; }
+    //public Status getStatus() { return status; }
     public ArrayList<Task> getTasks() { return tasks; }
     public boolean isComplete() {return complete;}
 
@@ -76,7 +75,7 @@ public class Item implements Comparable<Item>, Serializable {
     public void setEffort(int newEffort) { effort = newEffort; }
     public void setTime(int newTime) { risk = newTime; }
     public void setRisk(int newRisk) { risk = newRisk; }
-    public void setStatus(Status newStatus) { status = newStatus; };
+    //public void setStatus(Status newStatus) { status = newStatus; };
     public void setComplete(boolean complete) {this.complete = complete;}
 
     // Add a task

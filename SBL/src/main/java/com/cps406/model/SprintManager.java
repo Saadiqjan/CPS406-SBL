@@ -84,7 +84,7 @@ public class SprintManager implements Serializable {
 
         // Any incomplete sprint items should return back to the product backlog
         for (Item item : sprintItems) {
-            if (item.getStatus() != Status.DONE) {
+            if (!item.isComplete()) {
                 backlog.addItem(item);
             }
         }

@@ -5,11 +5,14 @@ package com.cps406.controllers;
 
 import com.cps406.AppState;
 import com.cps406.model.Item;
+import com.cps406.model.SprintStorage;
+import com.cps406.model.Storage;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.stage.Stage;
@@ -96,6 +99,26 @@ public class SprintController extends BaseController {
         stage.show();
     }
 
+    @FXML
+    private void handleFinishSprint(ActionEvent event) throws IOException {
+        appState.getSprintManager().finishSprint(appState.getProductBacklog());
+
+        // Save after finishing
+        SprintStorage.save(appState.getSprintManager());
+        Storage.save(appState.getProductBacklog());
+
+        // Show confirmation
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Sprint Finished");
+        alert.setHeaderText(null);
+        alert.setContentText("The sprint was finished successfully.");
+
+        alert.showAndWait();
+
+        // Go back to the dashboard
+        goToDashboard(event);
+    }
+
     public void setAppState(AppState appState) {
         super.setAppState(appState);
 
@@ -103,6 +126,8 @@ public class SprintController extends BaseController {
         for (Item item : appState.getSprintManager().getCurSprint().getItems()) {
             sprintTable.getItems().add(item);
         }
+
+
     }
 }
 
