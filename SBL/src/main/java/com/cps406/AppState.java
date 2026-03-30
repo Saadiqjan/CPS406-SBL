@@ -12,6 +12,7 @@ package com.cps406;
 
 import com.cps406.model.ProductBacklog;
 import com.cps406.model.SprintManager;
+import com.cps406.model.SprintStorage;
 import com.cps406.model.Storage;
 
 public class AppState {
@@ -24,16 +25,15 @@ public class AppState {
      */
     public AppState() {
         // Create/load in sprint manager and product backlog
-        sprintManager = new SprintManager();
+        sprintManager = SprintStorage.load();
         productBacklog = Storage.load();
     }
 
     public void saveBacklog() { Storage.save(productBacklog); }
+    public void saveSprintBacklog() {SprintStorage.save(sprintManager);}
 
     // Getters
-    public SprintManager getSprintManager() {
-        return sprintManager;
-    }
+    public SprintManager getSprintManager() {return sprintManager;}
     public ProductBacklog getProductBacklog() {
         return productBacklog;
     }

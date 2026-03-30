@@ -7,11 +7,13 @@
 
 package com.cps406.model;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class SprintManager {
+public class SprintManager implements Serializable {
+    private static final long serialVersionUID = 1L;
     // Store previous Sprints
     // TODO: save previous sprints to a local file
     //       only retrieve for reading
@@ -34,6 +36,8 @@ public class SprintManager {
         return curSprint;
     }
 
+    // Setters
+    public void setCurSprint(Sprint sprint) {this.curSprint = sprint;}
     /**
      * @return true if active sprint, false otherwise
      */

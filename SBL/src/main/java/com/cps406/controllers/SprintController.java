@@ -57,7 +57,8 @@ public class SprintController extends BaseController {
                     item.setComplete(checkBox.isSelected());
 
                     // Save and refresh
-                    appState.saveBacklog();
+                    //appState.saveBacklog();
+                    appState.saveSprintBacklog();
                     sprintTable.refresh();
                 });
             }
@@ -75,22 +76,6 @@ public class SprintController extends BaseController {
                 }
             }
         });
-
-
-//        sprintTable.setRowFactory(tv -> new javafx.scene.control.TableRow<Item>() {
-//            @Override
-//            protected void updateItem(Item item, boolean empty) {
-//                super.updateItem(item, empty);
-//
-//                if (empty || item == null) {
-//                    setStyle("");
-//                } else if (item.isComplete()) {
-//                    setStyle("-fx-opacity: 0.5;");
-//                } else {
-//                    setStyle("");
-//                }
-//            }
-//        });
     }
 
     @FXML

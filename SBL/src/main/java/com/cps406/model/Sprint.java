@@ -6,10 +6,12 @@
 
 package com.cps406.model;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
-public class Sprint {
+public class Sprint implements Serializable {
+    private static final long serialVersionUID = 1L;
     // Store the total number of sprints that have occured
     private static int totalSprints = 0;
 
