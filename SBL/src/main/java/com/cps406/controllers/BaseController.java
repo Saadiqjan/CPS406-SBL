@@ -92,7 +92,20 @@ public class BaseController {
          * doesn't get too our of hand.
          **/
         backlogTable.setRowFactory(tv -> {
-            TableRow<Item> row = new TableRow<>();
+            TableRow<Item> row = new TableRow<>() {
+                @Override
+                protected void updateItem(Item item, boolean empty) {
+                    super.updateItem(item, empty);
+
+                    if (empty || item == null) {
+                        setStyle("");
+                    } else if (item.isComplete()) {
+                        setStyle("-fx-opacity: 0.5;");
+                    } else {
+                        setStyle("");
+                    }
+                }
+            };
             Tooltip tooltip = new Tooltip();
             tooltip.setWrapText(true);
             tooltip.setMaxWidth(300);

@@ -50,7 +50,8 @@
          <content>
             <TableView fx:id="sprintTable" prefHeight="331.0" prefWidth="431.0" stylesheets="@styles.css">
               <columns>
-                <TableColumn fx:id="nameCol" prefWidth="75.0" text="Requirement" />
+                  <TableColumn fx:id="completeCol" prefWidth="35.0" text="Done" />
+                <TableColumn fx:id="nameCol" prefWidth="107.0" text="Requirement" />
                   <TableColumn fx:id="priorityCol" prefWidth="75.0" text="Priority" />
                   <TableColumn fx:id="effortCol" prefWidth="75.0" text="Effort" />
                   <TableColumn fx:id="timeCol" prefWidth="75.0" text="Time Estimate" />

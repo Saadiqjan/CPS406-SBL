@@ -26,7 +26,7 @@ public class Main extends Application {
      * @param stage the stage of our application
      * @throws IOException if loading scene fails
      */
-    //dih
+
     @Override
     public void start(Stage stage) throws IOException {
         // Create new app state

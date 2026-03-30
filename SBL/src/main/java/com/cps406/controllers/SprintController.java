@@ -36,8 +36,61 @@ public class SprintController extends BaseController {
     private TableColumn<Item, Float> riskCol;
 
     @FXML
+    private TableColumn<Item, Boolean> completeCol;
+
+    @FXML
     private void initialize() {
         setTableColumns(sprintTable, nameCol, priorityCol, effortCol, timeCol, riskCol);
+
+        /**
+         * Create a checklist for sprint items to mark complete/incomplete
+         */
+        completeCol.setCellValueFactory(cellData ->
+                new javafx.beans.property.SimpleBooleanProperty(cellData.getValue().isComplete()));
+
+        completeCol.setCellFactory(tc -> new javafx.scene.control.TableCell<Item, Boolean>() {
+            private final javafx.scene.control.CheckBox checkBox = new javafx.scene.control.CheckBox();
+
+            {
+                checkBox.setOnAction(event -> {
+                    Item item = getTableView().getItems().get(getIndex());
+                    item.setComplete(checkBox.isSelected());
+
+                    // Save and refresh
+                    appState.saveBacklog();
+                    sprintTable.refresh();
+                });
+            }
+
+            @Override
+            protected void updateItem(Boolean item, boolean empty) {
+                super.updateItem(item, empty);
+
+                if (empty) {
+                    setGraphic(null);
+                } else {
+                    Item rowItem = getTableView().getItems().get(getIndex());
+                    checkBox.setSelected(rowItem.isComplete());
+                    setGraphic(checkBox);
+                }
+            }
+        });
+
+
+//        sprintTable.setRowFactory(tv -> new javafx.scene.control.TableRow<Item>() {
+//            @Override
+//            protected void updateItem(Item item, boolean empty) {
+//                super.updateItem(item, empty);
+//
+//                if (empty || item == null) {
+//                    setStyle("");
+//                } else if (item.isComplete()) {
+//                    setStyle("-fx-opacity: 0.5;");
+//                } else {
+//                    setStyle("");
+//                }
+//            }
+//        });
     }
 
     @FXML

@@ -238,10 +238,10 @@ public class BacklogController extends BaseController {
      */
     @FXML
     private void clearBacklog(ActionEvent event) {
-        // retrieve the current backlog
+        // Retrieve current backlog
         ProductBacklog pb = appState.getProductBacklog();
 
-        // make sure backlog is not empty
+        // Ensure non-empty backlog
         if (pb.getBacklog().size() != 0) {
 
             // create a confirmation alert to warn the user
@@ -249,6 +249,7 @@ public class BacklogController extends BaseController {
             alert.setTitle("Confirm Backlog Clear");
             alert.setHeaderText("Deleting all backlog items");
             alert.setContentText("Items will not be recoverable. Proceed?");
+
 
             // create button options
             ButtonType yesButton = new ButtonType("Yes");
