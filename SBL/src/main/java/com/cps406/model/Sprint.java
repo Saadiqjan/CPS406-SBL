@@ -25,6 +25,10 @@ public class Sprint implements Serializable {
     // Store the items in the sprint
     private ArrayList<Item> items;
 
+    // Store progress
+    private int totalItems;
+    private int itemsCompleted;
+
     /**
      * Create sprint
      * @param capacity of the sprint
@@ -48,6 +52,39 @@ public class Sprint implements Serializable {
     // Get items
     public ArrayList<Item> getItems() {
         return items;
+    }
+
+    public boolean addItem(Item item) {
+        if (items.add(item)) {
+            totalItems++;
+            return true;
+        }
+
+        return false;
+    }
+
+    public boolean removeItem(Item item) {
+        if (removeItem(item)) {
+            totalItems--;
+            return true;
+        }
+
+        return false;
+    }
+
+    public void completeItem(boolean completion, Item item) {
+        item.setComplete(completion);
+
+        if (completion) {
+            itemsCompleted ++;
+        } else {
+            itemsCompleted--;
+        }
+    }
+
+    // Calculate Progess
+    public double getProgress() {
+        return (double)itemsCompleted / (double)totalItems;
     }
 
     // TODO: allow modification of sprint items

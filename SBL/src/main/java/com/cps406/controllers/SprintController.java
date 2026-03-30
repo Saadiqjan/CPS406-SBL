@@ -57,7 +57,11 @@ public class SprintController extends BaseController {
             {
                 checkBox.setOnAction(event -> {
                     Item item = getTableView().getItems().get(getIndex());
-                    item.setComplete(checkBox.isSelected());
+
+                    // mark item completed through the current sprint
+                    // this allows the sprint to know how many items have been completed
+                    // without going through the whole list
+                    appState.getSprintManager().getCurSprint().completeItem(checkBox.isSelected(), item);
 
                     // Save and refresh
                     //appState.saveBacklog();

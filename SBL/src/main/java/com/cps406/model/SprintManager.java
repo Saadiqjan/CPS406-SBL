@@ -66,7 +66,7 @@ public class SprintManager implements Serializable {
 
         // add items to sprint and remove from backlog
         for (Item item: selectedItems) {
-            curSprint.getItems().add(item);
+            curSprint.addItem(item);
             backlog.removeItem(item.getName());
         }
 
