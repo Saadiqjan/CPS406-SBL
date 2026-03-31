@@ -29,6 +29,7 @@ public class Sprint implements Serializable {
     private ArrayList<Item> items;
 
     // Store progress
+
     private int totalDays;
     private float totalEffort;
     private int totalItems;
