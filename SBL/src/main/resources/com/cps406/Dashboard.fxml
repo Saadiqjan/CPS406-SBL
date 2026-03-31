@@ -27,7 +27,7 @@
    <center>
       <VBox prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
          <children>
-            <LineChart prefHeight="481.0" prefWidth="800.0" styleClass="combo-box" stylesheets="@styles.css">
+            <LineChart prefHeight="470.0" prefWidth="800.0" styleClass="combo-box" stylesheets="@styles.css">
               <xAxis>
                 <CategoryAxis side="BOTTOM" />
               </xAxis>
@@ -47,7 +47,21 @@
                         <Insets bottom="10.0" left="15.0" right="15.0" top="10.0" />
                      </padding>
                   </ProgressBar>
-                  <Label prefHeight="49.0" prefWidth="46.0" text="0%" />
+                  <Label fx:id="progressLabel" prefHeight="49.0" prefWidth="46.0" text="0%" />
+               </children>
+            </HBox>
+            <HBox prefHeight="33.0" prefWidth="800.0">
+               <children>
+                  <Label fx:id="effortLabel" text="Remaining Effort: 0">
+                     <HBox.margin>
+                        <Insets left="20.0" />
+                     </HBox.margin>
+                  </Label>
+                  <Label fx:id="timeLabel" text="Remaining Time: 0 h">
+                     <HBox.margin>
+                        <Insets left="20.0" right="20.0" />
+                     </HBox.margin>
+                  </Label>
                </children>
             </HBox>
          </children>

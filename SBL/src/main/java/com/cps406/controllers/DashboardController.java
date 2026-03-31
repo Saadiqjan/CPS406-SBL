@@ -1,21 +1,39 @@
 // Author: Saadiq Shahsamand
 // Filename: DashboardController.java
 // Date Created: Mar 18 2026
-// Date Modified: Mar 25 2026
+// Date Modified: Mar 30 2026
 // Description: Controller for dashboard, allows movement to current
 //              sprint and the product backlog
 
 package com.cps406.controllers;
 
+import com.cps406.AppState;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.*;
+import javafx.scene.control.Label;
+import javafx.scene.control.ProgressBar;
 import javafx.stage.*;
 import javafx.event.*;
 
 import java.io.IOException;
 
 public class DashboardController extends BaseController {
+
+    // Store progress bar
+    @FXML
+    private ProgressBar sprintProgress;
+
+    @FXML
+    private Label progressLabel;
+
+    // Store remaining effort and time
+    @FXML
+    private Label timeLabel;
+
+    @FXML
+    private Label effortLabel;
+
     /**
      * Load and switch to sprint scene
      * @param event
@@ -72,5 +90,22 @@ public class DashboardController extends BaseController {
         scene.getStylesheets().add(getClass().getResource("/com/cps406/styles.css").toExternalForm());
         stage.setScene(scene);
         stage.show();
+    }
+
+    public void setAppState(AppState appState) {
+        super.setAppState(appState);
+
+        try {
+            sprintProgress.setProgress(appState.getSprintManager().getCurSprint().getProgress());
+            progressLabel.setText((int)(sprintProgress.getProgress() * 100) + "%");
+            effortLabel.setText("Remaining Effort: " + appState.getSprintManager().getCurSprint().getRemEffort());
+            timeLabel.setText("Remaining Time: " + appState.getSprintManager().getCurSprint().getRemTime() + "h");
+        }
+        catch (NullPointerException npe) {
+            sprintProgress.setProgress(0);
+            progressLabel.setText("0%");
+            effortLabel.setText("Remaining Effort: 0");
+            timeLabel.setText("Remaining Time: 0h");
+        }
     }
 }

@@ -87,5 +87,27 @@ public class Sprint implements Serializable {
         return (double)itemsCompleted / (double)totalItems;
     }
 
-    // TODO: allow modification of sprint items
+    public float getRemEffort() {
+        float remEffort = 0.0f;
+
+        for (Item item: items) {
+            if (!item.isComplete()) {
+                remEffort += item.getEffort();
+            }
+        }
+
+        return remEffort;
+    }
+
+    public float getRemTime() {
+        float remTime = 0.0f;
+
+        for (Item item: items) {
+            if (!item.isComplete()) {
+                remTime += item.getTime();
+            }
+        }
+
+        return remTime;
+    }
 }
