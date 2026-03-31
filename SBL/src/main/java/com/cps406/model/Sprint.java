@@ -10,6 +10,8 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
+import static java.util.concurrent.TimeUnit.DAYS;
+
 public class Sprint implements Serializable {
     private static final long serialVersionUID = 1L;
     // Store the total number of sprints that have occured
@@ -26,6 +28,8 @@ public class Sprint implements Serializable {
     private ArrayList<Item> items;
 
     // Store progress
+    private int totalDays;
+    private float totalEffort;
     private int totalItems;
     private int itemsCompleted;
 
@@ -34,7 +38,7 @@ public class Sprint implements Serializable {
      * @param capacity of the sprint
      * @param end date of the sprint
      */
-    public Sprint(int capacity, LocalDate end) {
+    public Sprint(int capacity, LocalDate end, int duration) {
         // Set current sprint and increase total sprint count
         totalSprints++;
         curSprint = totalSprints;
@@ -46,6 +50,7 @@ public class Sprint implements Serializable {
         this.end = end;
         this.status = Status.IN_PROGRESS;
 
+        totalDays = duration * 7;
         items = new ArrayList<>();
     }
 
@@ -54,9 +59,18 @@ public class Sprint implements Serializable {
         return items;
     }
 
+    public int getTotalDays() {
+        return totalDays;
+    }
+
+    public float getTotalEffort() {
+        return totalEffort;
+    }
+
     public boolean addItem(Item item) {
         if (items.add(item)) {
             totalItems++;
+            totalEffort += item.getEffort();
             return true;
         }
 

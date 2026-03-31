@@ -51,7 +51,7 @@ public class SprintManager implements Serializable {
     *   @param capacity, endDate, backlog, selectedItems
     *   @return true if sprint was successfully created, false otherwise
      */
-    public boolean createSprint(int capacity, LocalDate endDate, ProductBacklog backlog, ArrayList<Item> selectedItems) {
+    public boolean createSprint(int capacity, LocalDate endDate, int duration, ProductBacklog backlog, ArrayList<Item> selectedItems) {
 
         // prevent multiple sprints
         if (curSprint != null) {
@@ -62,7 +62,7 @@ public class SprintManager implements Serializable {
         if (capacity <= 0) return false;
         if (endDate == null || endDate.isBefore(LocalDate.now())) return false;
 
-        curSprint = new Sprint(capacity, endDate);
+        curSprint = new Sprint(capacity, endDate, duration);
 
         // add items to sprint and remove from backlog
         for (Item item: selectedItems) {

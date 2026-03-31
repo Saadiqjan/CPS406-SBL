@@ -282,7 +282,7 @@ public class CreateSprintController extends BaseController {
 
             // Create a new sprint
             // If the creation was successful, switch to the sprint scene
-            if (sm.createSprint(capacity, LocalDate.now().plusWeeks(duration), appState.getProductBacklog(), selectedItems)) {
+            if (sm.createSprint(capacity, LocalDate.now().plusWeeks(duration), duration, appState.getProductBacklog(), selectedItems)) {
                 appState.saveSprintBacklog();
                 appState.saveBacklog();
                 goToSprint(event);

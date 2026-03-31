@@ -11,6 +11,10 @@ import com.cps406.AppState;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.*;
+import javafx.scene.chart.CategoryAxis;
+import javafx.scene.chart.LineChart;
+import javafx.scene.chart.NumberAxis;
+import javafx.scene.chart.XYChart;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.stage.*;
@@ -19,6 +23,16 @@ import javafx.event.*;
 import java.io.IOException;
 
 public class DashboardController extends BaseController {
+
+    // Store burndown chart
+    @FXML
+    private LineChart<Number, Number> burndownChart;
+
+    @FXML
+    private NumberAxis daysAxis;
+
+    @FXML
+    private NumberAxis effortAxis;
 
     // Store progress bar
     @FXML
@@ -96,6 +110,11 @@ public class DashboardController extends BaseController {
         super.setAppState(appState);
 
         try {
+            daysAxis.setUpperBound(appState.getSprintManager().getCurSprint().getTotalDays());
+            effortAxis.setUpperBound(appState.getSprintManager().getCurSprint().getTotalEffort());
+            burndownChart.setAnimated(false);
+            buildIdealLine();
+
             sprintProgress.setProgress(appState.getSprintManager().getCurSprint().getProgress());
             progressLabel.setText((int)(sprintProgress.getProgress() * 100) + "%");
             effortLabel.setText("Remaining Effort: " + appState.getSprintManager().getCurSprint().getRemEffort());
@@ -107,5 +126,13 @@ public class DashboardController extends BaseController {
             effortLabel.setText("Remaining Effort: 0");
             timeLabel.setText("Remaining Time: 0h");
         }
+    }
+
+    private void buildIdealLine() {
+        XYChart.Series<Number, Number> ideal = new XYChart.Series<>();
+        ideal.setName("Ideal");
+        ideal.getData().add(new XYChart.Data<>(0, appState.getSprintManager().getCurSprint().getTotalEffort()));
+        ideal.getData().add(new XYChart.Data<>(appState.getSprintManager().getCurSprint().getTotalDays(), 0));
+        burndownChart.getData().add(ideal);
     }
 }
