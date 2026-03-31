@@ -68,6 +68,7 @@ public class Item implements Comparable<Item>, Serializable {
     public float getEffort() { return effort; }
     public float getTime() { return time; }
     public float getRisk() { return risk; }
+    public Integer getCompletionDay() { return completionDay;}
 
     public ArrayList<Task> getTasks() { return tasks; }
     public boolean isComplete() {return complete;}
