@@ -8,6 +8,9 @@
 package com.cps406.controllers;
 
 import com.cps406.AppState;
+import com.cps406.model.Item;
+import com.cps406.model.Sprint;
+
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.*;
@@ -114,6 +117,7 @@ public class DashboardController extends BaseController {
             effortAxis.setUpperBound(appState.getSprintManager().getCurSprint().getTotalEffort());
             burndownChart.setAnimated(false);
             buildIdealLine();
+            buildActualLine();
 
             sprintProgress.setProgress(appState.getSprintManager().getCurSprint().getProgress());
             progressLabel.setText((int)(sprintProgress.getProgress() * 100) + "%");
@@ -135,4 +139,34 @@ public class DashboardController extends BaseController {
         ideal.getData().add(new XYChart.Data<>(appState.getSprintManager().getCurSprint().getTotalDays(), 0));
         burndownChart.getData().add(ideal);
     }
+
+    private void buildActualLine() {
+        XYChart.Series<Number, Number> actual = new XYChart.Series<>();
+        actual.setName("Actual");
+
+        // Get sprint data
+        Sprint sprint = appState.getSprintManager().getCurSprint();
+
+        int totalDays = sprint.getTotalDays();
+        float totalEffort = sprint.getTotalEffort();
+
+        // Loop through each day of the sprint
+        for (int day = 0; day <= totalDays; day++) {
+            float remaining = totalEffort;
+
+            // Subtract effort of completed items up to this day
+            for (Item item : sprint.getItems()) {
+                if (item.isComplete() && item.getCompletionDay() != null && item.getCompletionDay() <= day) {
+                    remaining -= item.getEffort();
+                }
+            }
+
+            // Add data point to chart
+            actual.getData().add(new XYChart.Data<>(day, remaining));
+        }
+
+        // Add series to chart
+        burndownChart.getData().add(actual);
+    }
+
 }

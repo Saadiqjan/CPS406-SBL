@@ -8,6 +8,7 @@ package com.cps406.model;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 
 import static java.util.concurrent.TimeUnit.DAYS;
@@ -87,7 +88,7 @@ public class Sprint implements Serializable {
     }
 
     public void completeItem(boolean completion, Item item) {
-        item.setComplete(completion);
+        item.setComplete(completion, getCurrentDay());
 
         if (completion) {
             itemsCompleted ++;
@@ -123,5 +124,9 @@ public class Sprint implements Serializable {
         }
 
         return remTime;
+    }
+
+    public int getCurrentDay() {
+        return (int) ChronoUnit.DAYS.between(start, LocalDate.now());
     }
 }

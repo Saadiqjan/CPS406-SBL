@@ -20,6 +20,7 @@ public class Item implements Comparable<Item>, Serializable {
     private float effort;
     private float time;
     private float risk;
+    private Integer completionDay;
 
     // Store item status
     //private Status status;
@@ -56,6 +57,7 @@ public class Item implements Comparable<Item>, Serializable {
 
         // Set completion status
         complete = false;
+        completionDay = null;
     }
 
     // Getters
@@ -69,6 +71,7 @@ public class Item implements Comparable<Item>, Serializable {
     //public Status getStatus() { return status; }
     public ArrayList<Task> getTasks() { return tasks; }
     public boolean isComplete() {return complete;}
+    public Integer getCompletionDay() {return completionDay;}
 
     // Setters
     public void setPriority(int newPriority) { priority = newPriority; }
@@ -76,7 +79,17 @@ public class Item implements Comparable<Item>, Serializable {
     public void setTime(int newTime) { risk = newTime; }
     public void setRisk(int newRisk) { risk = newRisk; }
     //public void setStatus(Status newStatus) { status = newStatus; };
-    public void setComplete(boolean complete) {this.complete = complete;}
+    
+    public void setComplete(boolean complete, int day) {
+        this.complete = complete;
+        
+        if (complete) {
+            this.completionDay = day;
+        } 
+        else {
+            this.completionDay = null;
+        }
+    }
 
     // Add a task
     public void addTask(Task task) {
