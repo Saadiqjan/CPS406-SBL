@@ -237,4 +237,13 @@
     -fx-max-width: 300px;
 
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 10, 0, 0, 2);
+
+    #statusLabel {
+        -fx-background-color: #dff6dd;
+        -fx-text-fill: #1f5f2c;
+        -fx-padding: 8 12 8 12;
+        -fx-background-radius: 8;
+        -fx-border-radius: 8;
+        -fx-border-color: #1f5f2c;
+    }
 }

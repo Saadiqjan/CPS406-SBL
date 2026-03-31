@@ -68,29 +68,28 @@ public class Item implements Comparable<Item>, Serializable {
     public float getEffort() { return effort; }
     public float getTime() { return time; }
     public float getRisk() { return risk; }
-    //public Status getStatus() { return status; }
+
     public ArrayList<Task> getTasks() { return tasks; }
     public boolean isComplete() {return complete;}
-    public Integer getCompletionDay() {return completionDay;}
 
     // Setters
+    public void setName(String newName) { name = newName; }
+    public void setStory(String newStory) { story = newStory; }
+    public void setTask(String newTask) { task = newTask; }
     public void setPriority(int newPriority) { priority = newPriority; }
-    public void setEffort(int newEffort) { effort = newEffort; }
-    public void setTime(int newTime) { time = newTime; }
-    public void setRisk(int newRisk) { risk = newRisk; }
-    //public void setStatus(Status newStatus) { status = newStatus; };
-    
+    public void setEffort(float newEffort) { effort = newEffort; }
+    public void setTime(float newTime) { risk = newTime; }
+    public void setRisk(float newRisk) { risk = newRisk; }
     public void setComplete(boolean complete, int day) {
         this.complete = complete;
-        
+
         if (complete) {
             this.completionDay = day;
-        } 
+        }
         else {
             this.completionDay = null;
         }
     }
-
     // Add a task
     public void addTask(Task task) {
         tasks.add(task);

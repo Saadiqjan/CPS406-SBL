@@ -54,6 +54,11 @@ public class BacklogController extends BaseController {
     @FXML
     private TextField riskField;
 
+    @FXML private Button updateButton;
+
+    @FXML
+    private Label statusLabel;
+
     // Store the table for viewing the list of backlog items
     @FXML
     private TableView<Item> backlogTable;
@@ -148,6 +153,31 @@ public class BacklogController extends BaseController {
         };
 
         riskField.setTextFormatter(new TextFormatter<>(riskFilter));
+
+        backlogTable.getSelectionModel().selectedItemProperty().addListener((obs, oldItem, selectedItem) -> {
+            if (selectedItem != null) {
+                reqField.setText(selectedItem.getName());
+                storyArea.setText(selectedItem.getStory());
+                taskArea.setText(selectedItem.getTask());
+                priorityField.setText(String.valueOf(selectedItem.getPriority()));
+                effortField.setText(String.valueOf(selectedItem.getEffort()));
+                timeField.setText(String.valueOf(selectedItem.getTime()));
+
+                if (selectedItem.getRisk() >= 0) {
+                    riskField.setText(String.valueOf(selectedItem.getRisk()));
+                } else {
+                    riskField.clear();
+                }
+
+                if (updateButton != null) {
+                    updateButton.setDisable(false);
+                }
+            } else {
+                if (updateButton != null) {
+                    updateButton.setDisable(true);
+                }
+            }
+        });
     }
 
     /**
@@ -300,5 +330,62 @@ public class BacklogController extends BaseController {
         for (Item item : appState.getProductBacklog().getBacklog()) {
             backlogTable.getItems().add(item);
         }
+    }
+
+    @FXML
+    private void updateSelectedItem(ActionEvent event) {
+        try {
+            Item selectedItem = backlogTable.getSelectionModel().getSelectedItem();
+
+            if (selectedItem == null) {
+                throw new RuntimeException("Please select an item to edit.");
+            }
+
+            String name = reqField.getText().trim();
+            String story = storyArea.getText().trim();
+            String task = taskArea.getText().trim();
+            int priority = Integer.parseInt(priorityField.getText().trim());
+            float effort = Float.parseFloat(effortField.getText().trim());
+            float time = Float.parseFloat(timeField.getText().trim());
+
+            String tempRisk = riskField.getText().trim();
+            float risk = -1;
+
+            if (!tempRisk.isEmpty()) {
+                risk = Float.parseFloat(tempRisk);
+            }
+
+            if (name.isEmpty() || story.isEmpty() || task.isEmpty()) {
+                throw new RuntimeException("Fields cannot be empty.");
+            }
+
+            selectedItem.setName(name);
+            selectedItem.setStory(story);
+            selectedItem.setTask(task);
+            selectedItem.setPriority(priority);
+            selectedItem.setEffort(effort);
+            selectedItem.setTime(time);
+            selectedItem.setRisk(risk);
+
+            backlogTable.refresh();
+            appState.saveBacklog();
+
+            showStatusMessage(" Backlog item updated successfully.");
+
+        } catch (RuntimeException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    private void showStatusMessage(String message) {
+        statusLabel.setText(message);
+        statusLabel.setVisible(true);
+        statusLabel.setManaged(true);
+
+        PauseTransition pause = new PauseTransition(Duration.seconds(2));
+        pause.setOnFinished(e -> {
+            statusLabel.setVisible(false);
+            statusLabel.setManaged(false);
+        });
+        pause.play();
     }
 }
