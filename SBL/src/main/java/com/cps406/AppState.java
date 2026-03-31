@@ -1,4 +1,4 @@
-// Author: Saadiq Shahsamand, Ali Zarabi
+// Author: Saadiq Shahsamand, Ali Zarabi, Harjap Uppal
 // Filename: AppState.java
 // Date Created:
 // Date Modified:
@@ -24,17 +24,23 @@ public class AppState {
      * Create app state
      */
     public AppState() {
-        // Create/load in sprint manager and product backlog
-        sprintManager = SprintStorage.load();
+        // initalize sprint manager which loads the current sprint automatically
+        sprintManager = new SprintManager();
+
+        // load product backlog
         productBacklog = Storage.load();
     }
-
+    
     public void saveBacklog() { Storage.save(productBacklog); }
-    public void saveSprintBacklog() {SprintStorage.save(sprintManager);}
+
+    // save current sprint
+    public void saveCurSprint() {
+        if (sprintManager.getCurSprint() != null) {
+            sprintManager.setCurSprint(sprintManager.getCurSprint());
+        }
+    }
 
     // Getters
     public SprintManager getSprintManager() {return sprintManager;}
-    public ProductBacklog getProductBacklog() {
-        return productBacklog;
-    }
+    public ProductBacklog getProductBacklog() {return productBacklog;}
 }

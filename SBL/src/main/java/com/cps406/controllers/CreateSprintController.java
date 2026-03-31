@@ -1,4 +1,4 @@
-// Authors: Saadiq Shahsamand
+// Authors: Saadiq Shahsamand, Harjap Uppal
 // Filename: CreateSprintController.java
 // Date Created: Mar 24 2026
 // Date Modified: Mar 29 2026
@@ -283,7 +283,7 @@ public class CreateSprintController extends BaseController {
             // Create a new sprint
             // If the creation was successful, switch to the sprint scene
             if (sm.createSprint(capacity, LocalDate.now().plusWeeks(duration), duration, appState.getProductBacklog(), selectedItems)) {
-                appState.saveSprintBacklog();
+                appState.saveCurSprint();
                 appState.saveBacklog();
                 goToSprint(event);
             }

@@ -55,3 +55,5 @@ SBL/target/
 # ===========================
 backlog.dat
 sprint.dat
+cur_sprint.dat
+prev_sprints.dat

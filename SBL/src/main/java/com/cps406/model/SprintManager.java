@@ -14,105 +14,83 @@ import java.util.Collections;
 
 public class SprintManager implements Serializable {
     private static final long serialVersionUID = 1L;
-    // Store previous Sprints
-    // TODO: save previous sprints to a local file
-    //       only retrieve for reading
-    //       this arraylist should be then removed
-    private ArrayList<Sprint> prevSprints;
 
     // Store current sprint
     private Sprint curSprint;
 
-    /**
-     * create sprint manager
-     */
     public SprintManager() {
-        prevSprints = new ArrayList<Sprint>();
-        curSprint = null; // INIT THIS IN createSprint
+        // Load current sprint if it exists
+        curSprint = SprintStorage.loadCurSprint();
     }
 
     // Getters
-    public Sprint getCurSprint() {
-        return curSprint;
+    public Sprint getCurSprint() { return curSprint; }
+
+    // Load previous sprints from file
+    public ArrayList<Sprint> getPrevSprints() {
+        return SprintStorage.loadPreviousSprints();
     }
 
     // Setters
-    public void setCurSprint(Sprint sprint) {this.curSprint = sprint;}
-    /**
-     * @return true if active sprint, false otherwise
-     */
+    public void setCurSprint(Sprint sprint) { 
+        curSprint = sprint; 
+        SprintStorage.saveCurSprint(sprint);
+    }
+
+    // check if sprint is active
     public boolean isActiveSprint() {
         return curSprint != null;
     }
 
-
-    /**
-    *   Create Sprint
-    *   @param capacity, endDate, backlog, selectedItems
-    *   @return true if sprint was successfully created, false otherwise
-     */
+    // create a new sprint
     public boolean createSprint(int capacity, LocalDate endDate, int duration, ProductBacklog backlog, ArrayList<Item> selectedItems) {
 
-        // prevent multiple sprints
-        if (curSprint != null) {
-            return false;
-        }
-
-        // check if sprint is valid
+        if (curSprint != null) return false; // prevent multiple sprints
         if (capacity <= 0) return false;
         if (endDate == null || endDate.isBefore(LocalDate.now())) return false;
 
         curSprint = new Sprint(capacity, endDate, duration);
 
-        // add items to sprint and remove from backlog
-        for (Item item: selectedItems) {
+        for (Item item : selectedItems) {
             curSprint.addItem(item);
             backlog.removeItem(item.getName());
         }
 
-        return true; // sprint was successfully created
+        SprintStorage.saveCurSprint(curSprint);
+        return true;
     }
 
-    /**
-     * end sprint
-     * @param backlog the product backlog
-     */
-    public void finishSprint(ProductBacklog backlog)
-    {
-        // Get the sprint items
-        ArrayList<Item> sprintItems = curSprint.getItems();
+    // finish sprint
+    public void finishSprint(ProductBacklog backlog) {
+        if (curSprint == null) return;
 
-        // Any incomplete sprint items should return back to the product backlog
-        for (Item item : sprintItems) {
+        // Return incomplete items to backlog
+        for (Item item : curSprint.getItems()) {
             if (!item.isComplete()) {
                 backlog.addItem(item);
             }
         }
 
-        //save old sprint and reset for new one
-        prevSprints.add(curSprint);
+        // Append current sprint to previous sprints
+        SprintStorage.savePreviousSprint(curSprint);
+
+        // Clear current sprint
         curSprint = null;
+        SprintStorage.saveCurSprint(null);
     }
 
-    public ArrayList<Item> generateSprintBacklog (ArrayList<Item> productBacklog, int capacity) {
-        // Store recommended list of sprint items
-        ArrayList<Item> sprintList = new ArrayList<Item>();
-
-        // Store total effort
+    /** Generate recommended sprint backlog */
+    public ArrayList<Item> generateSprintBacklog(ArrayList<Item> productBacklog, int capacity) {
+        ArrayList<Item> sprintList = new ArrayList<>();
         float totalTime = 0;
-        float curTime = 0;
 
-        // Sort list based on priority
         Collections.sort(productBacklog);
 
-        // Add items to sprint list until capacity is exceeded
-        for (int i = 0; i < productBacklog.toArray().length; i++) {
-            curTime = productBacklog.get(i).getTime();
-
+        for (Item item : productBacklog) {
+            float curTime = item.getTime();
             if (totalTime + curTime < capacity) {
                 totalTime += curTime;
-
-                sprintList.add(productBacklog.get(i));
+                sprintList.add(item);
             }
         }
 

@@ -1,4 +1,4 @@
-// Author: Saadiq Shahsamand
+// Author: Saadiq Shahsamand, Harjap Uppal
 // Filename: DashboardController.java
 // Date Created: Mar 18 2026
 // Date Modified: Mar 30 2026

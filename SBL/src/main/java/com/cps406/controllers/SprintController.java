@@ -65,7 +65,7 @@ public class SprintController extends BaseController {
 
                     // Save and refresh
                     //appState.saveBacklog();
-                    appState.saveSprintBacklog();
+                    appState.saveCurSprint();
                     sprintTable.refresh();
                 });
             }
@@ -108,7 +108,6 @@ public class SprintController extends BaseController {
         appState.getSprintManager().finishSprint(appState.getProductBacklog());
 
         // Save after finishing
-        SprintStorage.save(appState.getSprintManager());
         Storage.save(appState.getProductBacklog());
 
         // Show confirmation

@@ -1,4 +1,4 @@
-// Author: Saadiq Shahsamand
+// Author: Saadiq Shahsamand, Harjap Uppal
 // Filename: Sprint.java
 // Date Created: Mar 19 2026
 // Date Modified:

@@ -1,4 +1,4 @@
-// Author: Saadiq Shahsamand, Ali Zarabi
+// Author: Saadiq Shahsamand, Ali Zarabi, Harjap Uppal
 // Filename: Item.java
 // Date Created: Mar 19 2026
 // Date Modified: Mar 28 2026
