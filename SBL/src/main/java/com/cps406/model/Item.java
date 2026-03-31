@@ -76,7 +76,7 @@ public class Item implements Comparable<Item>, Serializable {
     // Setters
     public void setPriority(int newPriority) { priority = newPriority; }
     public void setEffort(int newEffort) { effort = newEffort; }
-    public void setTime(int newTime) { risk = newTime; }
+    public void setTime(int newTime) { time = newTime; }
     public void setRisk(int newRisk) { risk = newRisk; }
     //public void setStatus(Status newStatus) { status = newStatus; };
     
@@ -96,9 +96,18 @@ public class Item implements Comparable<Item>, Serializable {
         tasks.add(task);
     }
 
-    // Get task by task name
-    public void getTask(String taskname) {
-        // TODO: implement this
+    /**
+     * Get a task by its name
+     * @param taskname name of the task to find
+     * @return the Task if found, null otherwise
+     */
+    public Task getTask(String taskname) {
+        for (Task task : tasks) {
+            if (task.getName().equals(taskname)) {
+                return task;
+            }
+        }
+        return null; // task not found
     }
 
     // Remove task by task name
