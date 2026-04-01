@@ -32,6 +32,7 @@ import javafx.util.Duration;
 
 import java.awt.*;
 import java.io.IOException;
+import java.util.function.UnaryOperator;
 
 public class SprintController extends BaseController {
     @FXML
@@ -297,13 +298,65 @@ public class SprintController extends BaseController {
 
         Label priorityLabel = new Label("Priority:");
         TextField priorityField = new TextField();
+        priorityField.setPromptText("(1-3)");
 
         Label effortLabel = new Label("Effort:");
         TextField effortField = new TextField();
+        effortField.setPromptText("(1-5)");
 
         Label timeLabel = new Label("Time:");
         TextField timeField = new TextField();
+        timeField.setPromptText("(hours)");
 
+        UnaryOperator<TextFormatter.Change> priorityFilter = change -> {
+            String text = change.getControlNewText();
+
+            if (text.isEmpty()) return change;
+            if (!text.matches("\\d+")) return null;
+
+            int value = Integer.parseInt(text);
+            if (value < 1 || value > 3) return null;
+
+            return change;
+        };
+
+        priorityField.setTextFormatter(new TextFormatter<>(priorityFilter));
+
+        UnaryOperator<TextFormatter.Change> effortFilter = change -> {
+            String text = change.getControlNewText();
+
+            if (text.isEmpty()) return change;
+            if (!text.matches("\\d*(\\.\\d*)?")) return null;
+
+            try {
+                float value = Float.parseFloat(text);
+                if (value < 1 || value > 5) return null;
+            } catch (NumberFormatException e) {
+                return null;
+            }
+
+            return change;
+        };
+
+        effortField.setTextFormatter(new TextFormatter<>(effortFilter));
+
+        UnaryOperator<TextFormatter.Change> timeFilter = change -> {
+            String text = change.getControlNewText();
+
+            if (text.isEmpty()) return change;
+            if (!text.matches("\\d*(\\.\\d*)?")) return null;
+
+            try {
+                float value = Float.parseFloat(text);
+                if (value < 0) return null;
+            } catch (NumberFormatException e) {
+                return null;
+            }
+
+            return change;
+        };
+
+        timeField.setTextFormatter(new TextFormatter<>(timeFilter));
         Button saveButton = new Button("Save");
         Button cancelButton = new Button("Cancel");
 
@@ -313,21 +366,29 @@ public class SprintController extends BaseController {
             String effortText = effortField.getText().trim();
             String timeText = timeField.getText().trim();
 
-            if (description.isEmpty() || effortText.isEmpty() || priorityText.isEmpty() || timeText.isEmpty()) {
-                System.out.println("Fill required fields.");
-                return;
-            }
-
             int priority;
             float effort;
             float time;
 
             try {
+                if (description.isEmpty() || effortText.isEmpty() || priorityText.isEmpty() || timeText.isEmpty()) {
+                    throw new NumberFormatException();
+                }
+
                 priority = Integer.parseInt(priorityText);
                 effort = Float.parseFloat(effortText);
                 time = Float.parseFloat(timeText);
             } catch (NumberFormatException ex) {
-                System.out.println("Estimate must be a number.");
+                // Create and setup alert
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Invalid Input");
+                alert.setHeaderText("Incorrect Format");
+                alert.setContentText("Please ensure all numeric fields are filled correctly:\n" +
+                        "- Priority: integer (1-3)\n" +
+                        "- Effort: number (1-5)\n" +
+                        "- Time: positive number");
+
+                alert.showAndWait();
                 return;
             }
 
@@ -336,6 +397,8 @@ public class SprintController extends BaseController {
             item.addTask(newTask);
 
             taskTable.getItems().add(newTask);
+
+            appState.saveCurSprint();
 
             popupStage.close();
         });
@@ -378,6 +441,8 @@ public class SprintController extends BaseController {
             riskLabel.setText("Risk: " + item.getRisk());
         }
     }
+
+
 
     public void setAppState(AppState appState) {
         super.setAppState(appState);

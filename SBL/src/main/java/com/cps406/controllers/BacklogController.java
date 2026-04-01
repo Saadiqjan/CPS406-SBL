@@ -86,6 +86,8 @@ public class BacklogController extends BaseController {
     private void initialize() {
         setTableColumns(backlogTable, nameCol, priorityCol, effortCol, timeCol, riskCol);
 
+        statusLabel.setVisible(false);
+
         UnaryOperator<TextFormatter.Change> priorityFilter = change -> {
             String text = change.getControlNewText();
 
@@ -245,7 +247,7 @@ public class BacklogController extends BaseController {
             // Create and setup alert
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Invalid Input");
-            alert.setHeaderText("Incorrect Number Format");
+            alert.setHeaderText("Incorrect Format");
             alert.setContentText("Please ensure all numeric fields are filled correctly:\n" +
             "- Priority: integer (1-3)\n" +
             "- Effort: number (1-5)\n" +
@@ -370,13 +372,17 @@ public class BacklogController extends BaseController {
             selectedItem.setTime(time);
             selectedItem.setRisk(risk);
 
-            backlogTable.refresh();
             appState.saveBacklog();
+            backlogTable.refresh();
 
-            showStatusMessage(" Backlog item updated successfully.");
+            showStatusMessage("Backlog item updated successfully.");
 
-        } catch (RuntimeException e) {
-            throw new RuntimeException(e);
+        }
+        catch (NumberFormatException nfe) {
+            //TODO: add alert
+        }
+        catch (RuntimeException e) {
+            //TODO: add alert
         }
     }
     private void showStatusMessage(String message) {

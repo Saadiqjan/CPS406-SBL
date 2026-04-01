@@ -79,7 +79,7 @@ public class Item implements Comparable<Item>, Serializable {
     public void setTask(String newTask) { task = newTask; }
     public void setPriority(int newPriority) { priority = newPriority; }
     public void setEffort(float newEffort) { effort = newEffort; }
-    public void setTime(float newTime) { risk = newTime; }
+    public void setTime(float newTime) { time = newTime; }
     public void setRisk(float newRisk) { risk = newRisk; }
     public void setComplete(boolean complete, int day) {
         this.complete = complete;
