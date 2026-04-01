@@ -154,6 +154,9 @@ public class BacklogController extends BaseController {
 
         riskField.setTextFormatter(new TextFormatter<>(riskFilter));
 
+        statusLabel.setVisible(false);
+        statusLabel.setManaged(false);
+
         backlogTable.getSelectionModel().selectedItemProperty().addListener((obs, oldItem, selectedItem) -> {
             if (selectedItem != null) {
                 reqField.setText(selectedItem.getName());
