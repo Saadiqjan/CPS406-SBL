@@ -96,14 +96,18 @@ public class Item implements Comparable<Item>, Serializable {
         tasks.add(task);
     }
 
+    public void setTaskComplete(boolean value, Task task) {
+        task.setComplete(value);
+    }
+
     /**
      * Get a task by its name
-     * @param taskname name of the task to find
+     * @param id id of the task
      * @return the Task if found, null otherwise
      */
-    public Task getTask(String taskname) {
+    public Task getTask(int id) {
         for (Task task : tasks) {
-            if (task.getName().equals(taskname)) {
+            if (task.getID() == id) {
                 return task;
             }
         }
@@ -111,8 +115,8 @@ public class Item implements Comparable<Item>, Serializable {
     }
 
     // Remove task by task name
-    public void removeTask(String taskName) {
-        tasks.removeIf(task -> task.getName().equals(taskName));
+    public void removeTask(int id) {
+        tasks.removeIf(task -> task.getID() == id);
     }
 
     @Override

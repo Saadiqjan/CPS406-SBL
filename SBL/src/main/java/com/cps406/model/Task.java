@@ -6,40 +6,45 @@
 
 package com.cps406.model;
 
-public class Task {
+import java.io.Serializable;
+
+public class Task implements Serializable {
+    private static final long serialVersionUID = 1L;
+    private static int nextId = 1;
+
     // Store task details
-    private String name;
+    private int id;
     private String description;
-    private Status status;
+    private int priority;
+    private float effort;
+    private float time;
+    private boolean complete;
 
     /**
-     * create a task
-     * @param name of the task
+     *
+     * @param description
+     * @param priority
+     * @param effort
+     * @param time
      */
-    public Task(String name) {
+    public Task(String description, int priority, float effort, float time) {
         // Store parameters
-        this.name = name;
-        status = Status.TODO;
+        id = nextId++;
+        this.description = description;
+        this.priority = priority;
+        this.effort = effort;
+        this.time = time;
+
+        complete = false;
     }
 
     // Getters
-    public String getName() { return name; }
-    public Status getStatus() { return status; }
+    public int getID() { return id; }
+    public String getDescription() { return description; }
+    public int getPriority() { return priority; }
+    public float getEffort() { return effort; }
+    public float getTime() { return time; }
+    public boolean isComplete() { return complete; }
 
-    // Might remove this if unused
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == this)
-            return true;
-
-        if (!(obj instanceof Task))
-            return false;
-
-        Task t = (Task)obj;
-
-        if (name.equals(t.getName()))
-            return true;
-
-        return false;
-    }
+    public void setComplete(boolean value) { complete = value; }
 }
