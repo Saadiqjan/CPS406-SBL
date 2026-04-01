@@ -236,7 +236,8 @@
     -fx-wrap-text: true;
     -fx-max-width: 300px;
 
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 10, 0, 0, 2);
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 10, 0, 0, 2);
+}
 
 #statusLabel {
     -fx-background-color: #dff6dd;
