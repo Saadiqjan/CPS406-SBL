@@ -108,7 +108,7 @@ public class SprintController extends BaseController {
                 checkBox.setOnAction(event -> {
                     Task task = getTableView().getItems().get(getIndex());
                     sprintTable.getSelectionModel().getSelectedItem().setTaskComplete(checkBox.isSelected(), task);
-                    appState.saveSprintBacklog();
+                    appState.saveCurSprint();
                     taskTable.refresh();
                 });
             }
