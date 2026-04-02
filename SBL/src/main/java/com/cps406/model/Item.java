@@ -25,7 +25,6 @@ public class Item implements Comparable<Item>, Serializable {
     private Integer completionDay;
 
     // Store item status
-    //private Status status;
     private boolean complete;
 
     // Store related engineering tasks

@@ -26,7 +26,6 @@ public class Main extends Application {
      * @param stage the stage of our application
      * @throws IOException if loading scene fails
      */
-
     @Override
     public void start(Stage stage) throws IOException {
         // Create new app state
@@ -48,13 +47,15 @@ public class Main extends Application {
         //DashboardController dbc = loader.getController();
         //dbc.setAppState(appState);
 
-        // Set the scene and show the stage
+        // Set the scene
         stage.setScene(scene);
 
+        // Set the icon and title
         stage.setTitle("Product Backlog Manager");
         stage.getIcons().add(
                 new Image(getClass().getResourceAsStream("/com/cps406/logo.png")));
 
+        // Show the stage
         stage.show();
     }
 }

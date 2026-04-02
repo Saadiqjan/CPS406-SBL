@@ -24,13 +24,14 @@ public class AppState {
      * Create app state
      */
     public AppState() {
-        // initalize sprint manager which loads the current sprint automatically
+        // initialize sprint manager which loads the current sprint automatically
         sprintManager = new SprintManager();
 
         // load product backlog
         productBacklog = Storage.load();
     }
-    
+
+    // Save the backlog
     public void saveBacklog() { Storage.save(productBacklog); }
 
     // save current sprint
@@ -41,6 +42,6 @@ public class AppState {
     }
 
     // Getters
-    public SprintManager getSprintManager() {return sprintManager;}
-    public ProductBacklog getProductBacklog() {return productBacklog;}
+    public SprintManager getSprintManager() { return sprintManager; }
+    public ProductBacklog getProductBacklog() { return productBacklog; }
 }
