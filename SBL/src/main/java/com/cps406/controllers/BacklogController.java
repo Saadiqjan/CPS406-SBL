@@ -1,9 +1,10 @@
-// Authors: Saadiq Shahsamand, Ali Zarabi
+// Authors: Saadiq Shahsamand, Ali Zarabi, Harjap Uppal
 // Filename: BacklogController.java
 // Date Created: Mar 18 2026
 // Date Modified: Mar 26 2026
-// Description: Controller for the backlog scene, allows creation
-//              of backlog items and clearing the backlog
+// Description: Controller for the backlog view.
+//              Handles creation, updating, display, and deletion of product backlog items.
+//              Also manages input validation and synchronization between UI and AppState.
 
 package com.cps406.controllers;
 
@@ -80,7 +81,10 @@ public class BacklogController extends BaseController {
     private TableColumn<Item, Float> riskCol;
 
     /**
-     * initialize cell values of each cell in the backlog table
+     * Initializes UI components:
+     * - Binds table columns to Item properties
+     * - Applies input validation using TextFormatters
+     * - Sets up selection listener to populate fields for editing
      */
     @FXML
     private void initialize() {
@@ -195,8 +199,7 @@ public class BacklogController extends BaseController {
             // Retrieve product backlog
             ProductBacklog pb = appState.getProductBacklog();
 
-            // Retrieve the name, story, task, priority, effort, and risk of the item
-            // from the UI text fields/areas
+            // Extract and parse user input from form fields
             String name = reqField.getText().trim();
             String story = storyArea.getText().trim();
             String task = taskArea.getText().trim();
@@ -326,7 +329,10 @@ public class BacklogController extends BaseController {
         stage.show();
     }
 
-    // Set the app state
+    /**
+     * Set the appstate and update table with backlog items
+     * @param appstate
+     */
     @Override
     public void setAppState(AppState appState) {
         super.setAppState(appState);
@@ -337,11 +343,15 @@ public class BacklogController extends BaseController {
         }
     }
 
+    /**
+    * Updates the currently selected backlog item using form input
+    */
     @FXML
     private void updateSelectedItem(ActionEvent event) {
         try {
             Item selectedItem = backlogTable.getSelectionModel().getSelectedItem();
 
+            // Ensure an item is selected before updating
             if (selectedItem == null) {
                 throw new RuntimeException("Please select an item to edit.");
             }
@@ -360,10 +370,12 @@ public class BacklogController extends BaseController {
                 risk = Float.parseFloat(tempRisk);
             }
 
+            // Validate fields
             if (name.isEmpty() || story.isEmpty() || task.isEmpty()) {
                 throw new RuntimeException("Fields cannot be empty.");
             }
 
+            // Apply updates to selected item
             selectedItem.setName(name);
             selectedItem.setStory(story);
             selectedItem.setTask(task);
@@ -399,6 +411,10 @@ public class BacklogController extends BaseController {
             alert.showAndWait();
         }
     }
+
+    /**
+    * Displays a temporary success message to the user
+    */
     private void showStatusMessage(String message) {
         statusLabel.setText(message);
         statusLabel.setVisible(true);
