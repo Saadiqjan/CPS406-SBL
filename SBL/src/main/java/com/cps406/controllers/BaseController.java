@@ -1,23 +1,39 @@
-// Author: Saadiq Shahsamand
+// Author: Saadiq Shahsamand, Ali Zarabi
 // Filename: BaseController.java
 // Date Created: Mar 24 2026
-// Date Modified: Mar 25 2026
+// Date Modified: Apr 2 2026
 // Description: Base controller class providing shared functionality for all UI controllers.
 //              Includes scene management, access to AppState, and reusable table configuration logic.
 
 package com.cps406.controllers;
 
 import com.cps406.AppState;
+import com.cps406.Main;
 import com.cps406.model.Item;
 import javafx.animation.PauseTransition;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import javafx.event.ActionEvent;
+import java.io.IOException;
+import java.util.Objects;
+import java.util.function.UnaryOperator;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class BaseController {
+    // Store file paths
+    protected final String styleSheetPath = "/com/cps406/styles.css";
+    protected final String dashboardPath = "/com/cps406/Dashboard.fxml";
+    protected final String sprintPath = "/com/cps406/Sprint.fxml";
+    protected final String createSprintPath = "/com/cps406/CreateSprint.fxml";
+    protected final String backlogPath = "/com/cps406/Backlog.fxml";
+
     // Store stage scene and root
     // Required for switching between scenes
     protected Stage stage;
@@ -36,6 +52,68 @@ public class BaseController {
     }
 
     /**
+     * load dashboard scene
+     * @param event for stage
+     */
+    protected void loadDashboard(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(dashboardPath));
+            root = loader.load();
+
+            // Set the app state of the controller for the dashboard scene
+            DashboardController dbc = loader.getController();
+            dbc.setAppState(appState);
+
+            // Create and set the scene
+            stage = (Stage) ((Node)event.getSource()).getScene().getWindow();
+            scene = new Scene(root);
+            scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource(styleSheetPath)).toExternalForm());
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException ioe) {
+            Logger.getLogger(Main.class.getName())
+                    .log(Level.SEVERE, "Failed to load scene: " + dashboardPath, ioe);
+        } catch (IllegalStateException ise) {
+            Logger.getLogger(Main.class.getName())
+                    .log(Level.SEVERE, "FXML resource not found: " + dashboardPath, ise);
+        } catch (NullPointerException npe) {
+            Logger.getLogger(Main.class.getName())
+                    .log(Level.SEVERE, "Failed to load style sheet: " + styleSheetPath, npe);
+        }
+    }
+
+    /**
+     * load sprint scene
+     * @param event for stage
+     */
+    protected void loadSprint(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(sprintPath));
+            root = loader.load();
+
+            // Set the app state of the controller for the sprint scene
+            SprintController sc = loader.getController();
+            sc.setAppState(appState);
+
+            // Create and set the scene
+            stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            scene = new Scene(root);
+            scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource(styleSheetPath)).toExternalForm());
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException ioe) {
+            Logger.getLogger(Main.class.getName())
+                    .log(Level.SEVERE, "Failed to load scene: " + sprintPath, ioe);
+        } catch (IllegalStateException ise) {
+            Logger.getLogger(Main.class.getName())
+                    .log(Level.SEVERE, "FXML resource not found: " + sprintPath, ise);
+        } catch (NullPointerException npe) {
+            Logger.getLogger(Main.class.getName())
+                    .log(Level.SEVERE, "Failed to load style sheet: " + styleSheetPath, npe);
+        }
+    }
+
+    /**
      * this method will initialize a backlog table and its columns
      * @param backlogTable the table
      * @param nameCol requirement name column
@@ -50,22 +128,19 @@ public class BaseController {
                                    TableColumn<Item, Float> effortCol,
                                    TableColumn<Item, Float> timeCol,
                                    TableColumn<Item, Float> riskCol) {
+        // Set the property values for each column
         nameCol.setCellValueFactory(
                 new PropertyValueFactory<>("name")
         );
-
         priorityCol.setCellValueFactory(
                 new PropertyValueFactory<>("priority")
         );
-
         effortCol.setCellValueFactory(
                 new PropertyValueFactory<>("effort")
         );
-
         timeCol.setCellValueFactory(
                 new PropertyValueFactory<>("time")
         );
-
         riskCol.setCellValueFactory(
                 new PropertyValueFactory<>("risk")
         );
@@ -88,11 +163,9 @@ public class BaseController {
             }
         });
 
-        /**
-         * Initialize a pop-up to appear when a task is hovered over for one second. This popup showcases
-         * the task's story, task, priority, effort and risk in that order. Cascades text to ensure the popup
-         * doesn't get too our of hand.
-         **/
+        // Initialize a pop-up to appear when a task is hovered over for one second. This popup showcases
+        // the task's story, task, priority, effort and risk in that order. Cascades text to ensure the popup
+        // doesn't get too our of hand.
         backlogTable.setRowFactory(tv -> {
             TableRow<Item> row = new TableRow<>() {
                 @Override
@@ -162,5 +235,67 @@ public class BaseController {
 
             return row;
         });
+    }
+
+    /**
+     * add a unary operator filter to ensure proper input for
+     * the priority field, effort field, and time field
+     * @param priorityField priority field
+     * @param effortField effort field
+     * @param timeField time field
+     */
+    protected void addUnaryOperator(TextField priorityField, TextField effortField, TextField timeField) {
+
+        // Filter non integer values outside the range 1-3
+        UnaryOperator<TextFormatter.Change> priorityFilter = change -> {
+            String text = change.getControlNewText();
+
+            if (text.isEmpty()) return change;
+            if (!text.matches("\\d+")) return null;
+
+            int value = Integer.parseInt(text);
+            if (value < 1 || value > 3) return null;
+
+            return change;
+        };
+
+        // Filter non-real values outside the range 1-5
+        UnaryOperator<TextFormatter.Change> effortFilter = change -> {
+            String text = change.getControlNewText();
+
+            if (text.isEmpty()) return change;
+            if (!text.matches("\\d*(\\.\\d*)?")) return null;
+
+            try {
+                float value = Float.parseFloat(text);
+                if (value < 1 || value > 5) return null;
+            } catch (NumberFormatException e) {
+                return null;
+            }
+
+            return change;
+        };
+
+        // Filter non-real values
+        UnaryOperator<TextFormatter.Change> timeFilter = change -> {
+            String text = change.getControlNewText();
+
+            if (text.isEmpty()) return change;
+            if (!text.matches("\\d*(\\.\\d*)?")) return null;
+
+            try {
+                float value = Float.parseFloat(text);
+                if (value < 0) return null;
+            } catch (NumberFormatException e) {
+                return null;
+            }
+
+            return change;
+        };
+
+        // Add filters to their corresponding fields
+        priorityField.setTextFormatter(new TextFormatter<>(priorityFilter));
+        effortField.setTextFormatter(new TextFormatter<>(effortFilter));
+        timeField.setTextFormatter(new TextFormatter<>(timeFilter));
     }
 }

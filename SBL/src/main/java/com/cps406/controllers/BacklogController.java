@@ -12,19 +12,11 @@ import com.cps406.AppState;
 import com.cps406.model.Item;
 import com.cps406.model.ProductBacklog;
 import javafx.event.ActionEvent;
-import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
-import javafx.scene.Scene;
+import javafx.fxml.*;
+import javafx.scene.*;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.image.Image;
-import javafx.stage.Stage;
-
 import java.util.Optional;
-
 import java.io.IOException;
-
 import javafx.animation.PauseTransition;
 import javafx.util.Duration;
 
@@ -55,7 +47,8 @@ public class BacklogController extends BaseController {
     @FXML
     private TextField riskField;
 
-    @FXML private Button updateButton;
+    @FXML
+    private Button updateButton;
 
     @FXML
     private Label statusLabel;
@@ -88,60 +81,20 @@ public class BacklogController extends BaseController {
      */
     @FXML
     private void initialize() {
+        // Initialize update button
+        updateButton = null;
+
+        //initialize backlog table
         setTableColumns(backlogTable, nameCol, priorityCol, effortCol, timeCol, riskCol);
 
+        // Status label should not be visible or managed
         statusLabel.setVisible(false);
+        statusLabel.setManaged(false);
 
-        UnaryOperator<TextFormatter.Change> priorityFilter = change -> {
-            String text = change.getControlNewText();
+        // Add unary operators for the priority, effort, and time field
+        addUnaryOperator(priorityField, effortField, timeField);
 
-            if (text.isEmpty()) return change;
-            if (!text.matches("\\d+")) return null;
-
-            int value = Integer.parseInt(text);
-            if (value < 1 || value > 3) return null;
-
-            return change;
-        };
-
-        priorityField.setTextFormatter(new TextFormatter<>(priorityFilter));
-
-        UnaryOperator<TextFormatter.Change> effortFilter = change -> {
-            String text = change.getControlNewText();
-
-            if (text.isEmpty()) return change;
-            if (!text.matches("\\d*(\\.\\d*)?")) return null;
-
-            try {
-                float value = Float.parseFloat(text);
-                if (value < 1 || value > 5) return null;
-            } catch (NumberFormatException e) {
-                return null;
-            }
-
-            return change;
-        };
-
-        effortField.setTextFormatter(new TextFormatter<>(effortFilter));
-
-        UnaryOperator<TextFormatter.Change> timeFilter = change -> {
-            String text = change.getControlNewText();
-
-            if (text.isEmpty()) return change;
-            if (!text.matches("\\d*(\\.\\d*)?")) return null;
-
-            try {
-                float value = Float.parseFloat(text);
-                if (value < 0) return null;
-            } catch (NumberFormatException e) {
-                return null;
-            }
-
-            return change;
-        };
-
-        timeField.setTextFormatter(new TextFormatter<>(timeFilter));
-
+        // Add unary operator for risk field
         UnaryOperator<TextFormatter.Change> riskFilter = change -> {
             String text = change.getControlNewText();
 
@@ -160,11 +113,11 @@ public class BacklogController extends BaseController {
 
         riskField.setTextFormatter(new TextFormatter<>(riskFilter));
 
-        statusLabel.setVisible(false);
-        statusLabel.setManaged(false);
-
+        // Add a listener to the backlog table
+        // This allows for users to select backlog items for modification
         backlogTable.getSelectionModel().selectedItemProperty().addListener((obs, oldItem, selectedItem) -> {
             if (selectedItem != null) {
+                // Retrieve attributes of selected items
                 reqField.setText(selectedItem.getName());
                 storyArea.setText(selectedItem.getStory());
                 taskArea.setText(selectedItem.getTask());
@@ -178,10 +131,13 @@ public class BacklogController extends BaseController {
                     riskField.clear();
                 }
 
+                // Enable update button
                 if (updateButton != null) {
                     updateButton.setDisable(false);
                 }
             } else {
+                // Disable update button
+                // This is to prevent updating a null item
                 if (updateButton != null) {
                     updateButton.setDisable(true);
                 }
@@ -191,38 +147,16 @@ public class BacklogController extends BaseController {
 
     /**
      * Add an item to the product backlog
-     * @param event
      */
     @FXML
-    private void addToBacklog(ActionEvent event) {
+    private void addToBacklog() {
         try {
             // Retrieve product backlog
             ProductBacklog pb = appState.getProductBacklog();
 
-            // Extract and parse user input from form fields
-            String name = reqField.getText().trim();
-            String story = storyArea.getText().trim();
-            String task = taskArea.getText().trim();
-            int priority = Integer.parseInt(priorityField.getText().trim());
-            float effort = Float.parseFloat(effortField.getText().trim());
-            float time = Float.parseFloat(timeField.getText().trim());
-
-            String tempRisk = riskField.getText().trim();
-            float risk = -1;
-
-            // Parse risk if not empty
-            if (!tempRisk.isEmpty()) {
-                risk = Float.parseFloat(tempRisk);
-            }
-
-
-            // Throw exception if name, story, or task is empty
-            if (name.isEmpty() || story.isEmpty() || task.isEmpty()) {
-                throw new RuntimeException("Empty string");
-            }
-
-            // Create new item with the retrieved values
-            Item item = new Item(name, story, task, priority, effort, time, risk);
+            // Retrieve the name, story, task, priority, effort, and risk of the item
+            // from the UI text fields/areas
+            Item item = getItem();
 
             // Add item to product backlog and backlog table
             // throw error if the item with same name already exists
@@ -235,6 +169,9 @@ public class BacklogController extends BaseController {
 
             // Save backlog
             appState.saveBacklog();
+
+            // Show status method upon successful completion
+            showStatusMessage("Backlog item added successfully.");
 
             // At this point backlog addition was a success
             // Clear the text fields and areas in the UI
@@ -251,11 +188,12 @@ public class BacklogController extends BaseController {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Invalid Input");
             alert.setHeaderText("Incorrect Format");
-            alert.setContentText("Please ensure all numeric fields are filled correctly:\n" +
-            "- Priority: integer (1-3)\n" +
-            "- Effort: number (1-5)\n" +
-            "- Time: positive number\n" +
-            "- Risk: number (1-5, optional)");
+            alert.setContentText("""
+                    Please ensure all numeric fields are filled correctly:
+                    - Priority: integer (1-3)
+                    - Effort: number (1-5)
+                    - Time: positive number
+                    - Risk: number (1-5, optional)""");
 
             alert.showAndWait();
         }
@@ -272,15 +210,14 @@ public class BacklogController extends BaseController {
 
     /**
      * Clear all items from the product backlog after user confirms
-     * @param event
      */
     @FXML
-    private void clearBacklog(ActionEvent event) {
+    private void clearBacklog() {
         // Retrieve current backlog
         ProductBacklog pb = appState.getProductBacklog();
 
         // Ensure non-empty backlog
-        if (pb.getBacklog().size() != 0) {
+        if (!pb.getBacklog().isEmpty()) {
 
             // create a confirmation alert to warn the user
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
@@ -308,30 +245,17 @@ public class BacklogController extends BaseController {
 
     /**
      * Load and switch to the dashboard scene
-     * @param event
-     * @throws IOException if loading in the dashboard scene fails
+     * @param event for getting stage
      */
     @FXML
-    private void goToDashboard(ActionEvent event) throws IOException {
+    private void goToDashboard(ActionEvent event) {
         // Load dashboard scene
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/cps406/Dashboard.fxml"));
-        root = loader.load();
-
-        // Set the app state of the controller for the dashboard scene
-        DashboardController dbc = loader.getController();
-        dbc.setAppState(appState);
-
-        // Create and set the scene
-        stage = (Stage) ((Node)event.getSource()).getScene().getWindow();
-        scene = new Scene(root);
-        scene.getStylesheets().add(getClass().getResource("/com/cps406/styles.css").toExternalForm());
-        stage.setScene(scene);
-        stage.show();
+        loadDashboard(event);
     }
 
     /**
      * Set the appstate and update table with backlog items
-     * @param appstate
+     * @param appState state of the app
      */
     @Override
     public void setAppState(AppState appState) {
@@ -347,79 +271,97 @@ public class BacklogController extends BaseController {
     * Updates the currently selected backlog item using form input
     */
     @FXML
-    private void updateSelectedItem(ActionEvent event) {
+    private void updateSelectedItem() {
         try {
+            // Retrieve selected item
             Item selectedItem = backlogTable.getSelectionModel().getSelectedItem();
 
+            // throw exception if the item is null
             // Ensure an item is selected before updating
             if (selectedItem == null) {
                 throw new RuntimeException("Please select an item to edit.");
             }
 
-            String name = reqField.getText().trim();
-            String story = storyArea.getText().trim();
-            String task = taskArea.getText().trim();
-            int priority = Integer.parseInt(priorityField.getText().trim());
-            float effort = Float.parseFloat(effortField.getText().trim());
-            float time = Float.parseFloat(timeField.getText().trim());
+            // Get the new item
+            Item item = getItem();
 
-            String tempRisk = riskField.getText().trim();
-            float risk = -1;
+            // Update the selected item
+            selectedItem.setName(item.getName());
+            selectedItem.setStory(item.getStory());
+            selectedItem.setTask(item.getTask());
+            selectedItem.setPriority(item.getPriority());
+            selectedItem.setEffort(item.getEffort());
+            selectedItem.setTime(item.getTime());
+            selectedItem.setRisk(item.getRisk());
 
-            if (!tempRisk.isEmpty()) {
-                risk = Float.parseFloat(tempRisk);
-            }
-
-            // Validate fields
-            if (name.isEmpty() || story.isEmpty() || task.isEmpty()) {
-                throw new RuntimeException("Fields cannot be empty.");
-            }
-
-            // Apply updates to selected item
-            selectedItem.setName(name);
-            selectedItem.setStory(story);
-            selectedItem.setTask(task);
-            selectedItem.setPriority(priority);
-            selectedItem.setEffort(effort);
-            selectedItem.setTime(time);
-            selectedItem.setRisk(risk);
-
+            // Save backlog
             appState.saveBacklog();
             backlogTable.refresh();
 
+            // Show status method upon successful completion
             showStatusMessage("Backlog item updated successfully.");
-
         }
         catch (NumberFormatException nfe) {
+            // Create and setup alert
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Invalid Input");
             alert.setHeaderText("Incorrect Format");
-            alert.setContentText("Please ensure all numeric fields are filled correctly:\n" +
-                    "- Priority: integer (1-3)\n" +
-                    "- Effort: number (1-5)\n" +
-                    "- Time: positive number\n" +
-                    "- Risk: number (1-5, optional)");
+            alert.setContentText("""
+                    Please ensure all numeric fields are filled correctly:
+                    - Priority: integer (1-3)
+                    - Effort: number (1-5)
+                    - Time: positive number
+                    - Risk: number (1-5, optional)""");
 
             alert.showAndWait();
         }
-        catch (RuntimeException e) {
+        catch (RuntimeException re) {
+            // Create setup alert
             Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Error Updating Item");
-            alert.setHeaderText("Could not update backlog item");
-            alert.setContentText(e.getMessage());
+            alert.setTitle("Error Adding Item");
+            alert.setHeaderText("Could not add backlog item");
+            alert.setContentText(re.getMessage());
 
             alert.showAndWait();
         }
     }
+    private Item getItem() {
+        // Retrieve contents of text fields and areas
+        String name = reqField.getText().trim();
+        String story = storyArea.getText().trim();
+        String task = taskArea.getText().trim();
+        int priority = Integer.parseInt(priorityField.getText().trim());
+        float effort = Float.parseFloat(effortField.getText().trim());
+        float time = Float.parseFloat(timeField.getText().trim());
+
+        String tempRisk = riskField.getText().trim();
+        float risk = -1;
+
+        // Parse risk if not empty
+        if (!tempRisk.isEmpty()) {
+            risk = Float.parseFloat(tempRisk);
+        }
+
+        // Throw exception if name, story, or task is empty
+        if (name.isEmpty() || story.isEmpty() || task.isEmpty()) {
+            throw new RuntimeException("Empty string");
+        }
+
+        // Create new item with the retrieved values
+        return new Item(name, story, task, priority, effort, time, risk);
+    }
 
     /**
-    * Displays a temporary success message to the user
-    */
+     * show a status message to the user
+     * @param message to be shown
+     */
     private void showStatusMessage(String message) {
+        // Display message
         statusLabel.setText(message);
         statusLabel.setVisible(true);
         statusLabel.setManaged(true);
 
+        // Keep the message up for 2 seconds and then set invisible
         PauseTransition pause = new PauseTransition(Duration.seconds(2));
         pause.setOnFinished(e -> {
             statusLabel.setVisible(false);

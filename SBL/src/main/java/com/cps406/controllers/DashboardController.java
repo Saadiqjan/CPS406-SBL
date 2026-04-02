@@ -1,7 +1,7 @@
 // Author: Saadiq Shahsamand, Harjap Uppal
 // Filename: DashboardController.java
 // Date Created: Mar 18 2026
-// Date Modified: Mar 30 2026
+// Date Modified: Apr 2 2026
 // Description: Controller for dashboard, allows movement to current
 //              sprint and the product backlog
 
@@ -14,7 +14,6 @@ import com.cps406.model.Sprint;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.*;
-import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
@@ -24,6 +23,7 @@ import javafx.stage.*;
 import javafx.event.*;
 
 import java.io.IOException;
+import java.util.Objects;
 
 public class DashboardController extends BaseController {
 
@@ -53,7 +53,7 @@ public class DashboardController extends BaseController {
 
     /**
      * Load and switch to sprint scene
-     * @param event
+     * @param event for stage
      * @throws IOException if loading scene fails
      */
     @FXML
@@ -62,20 +62,10 @@ public class DashboardController extends BaseController {
         // If there is an active sprint, load the sprint scene
         // If not, load the sprint creation scene
         if (appState.getSprintManager().isActiveSprint()) {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/cps406/Sprint.fxml"));
-            root = loader.load();
-
-            SprintController sc = loader.getController();
-            sc.setAppState(appState);
-
-            stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            scene = new Scene(root);
-            scene.getStylesheets().add(getClass().getResource("/com/cps406/styles.css").toExternalForm());
-            stage.setScene(scene);
-            stage.show();
+            loadSprint(event);
         }
         else {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/cps406/CreateSprint.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(createSprintPath));
             root = loader.load();
 
             CreateSprintController csc = loader.getController();
@@ -83,7 +73,7 @@ public class DashboardController extends BaseController {
 
             stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             scene = new Scene(root);
-            scene.getStylesheets().add(getClass().getResource("/com/cps406/styles.css").toExternalForm());
+            scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource(styleSheetPath)).toExternalForm());
             stage.setScene(scene);
             stage.show();
         }
@@ -91,12 +81,12 @@ public class DashboardController extends BaseController {
 
     /**
      * load and switch to backlog scene
-     * @param event
+     * @param event for stage
      * @throws IOException if loading scene fails
      */
     @FXML
     private void goToBacklog(ActionEvent event) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/cps406/Backlog.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource(backlogPath));
         root = loader.load();
 
         BacklogController bc = loader.getController();
@@ -104,7 +94,7 @@ public class DashboardController extends BaseController {
 
         stage = (Stage)((Node)event.getSource()).getScene().getWindow();
         scene = new Scene(root);
-        scene.getStylesheets().add(getClass().getResource("/com/cps406/styles.css").toExternalForm());
+        scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource(styleSheetPath)).toExternalForm());
         stage.setScene(scene);
         stage.show();
     }
@@ -112,19 +102,26 @@ public class DashboardController extends BaseController {
     public void setAppState(AppState appState) {
         super.setAppState(appState);
 
+        // Setup progress bar and burn down chart
         try {
+            // Set up burn down chart axis
             daysAxis.setUpperBound(appState.getSprintManager().getCurSprint().getTotalDays());
             effortAxis.setUpperBound(appState.getSprintManager().getCurSprint().getTotalEffort());
             burndownChart.setAnimated(false);
+
+            // Build ideal and actual line
             buildIdealLine();
             buildActualLine();
 
+            // Set the progress bar and the remaining time and effort
             sprintProgress.setProgress(appState.getSprintManager().getCurSprint().getProgress());
             progressLabel.setText((int)(sprintProgress.getProgress() * 100) + "%");
             effortLabel.setText("Remaining Effort: " + appState.getSprintManager().getCurSprint().getRemEffort());
             timeLabel.setText("Remaining Time: " + appState.getSprintManager().getCurSprint().getRemTime() + "h");
         }
         catch (NullPointerException npe) {
+            // This catch block runs when there isn't an active sprint
+            // Progress is 0
             sprintProgress.setProgress(0);
             progressLabel.setText("0%");
             effortLabel.setText("Remaining Effort: 0");
@@ -132,7 +129,13 @@ public class DashboardController extends BaseController {
         }
     }
 
+    /**
+     * Build the ideal line of the burn down chart, which is a diagonal line.
+     * It represents the amount of effort accomplished per day being evenly
+     * distributed across the duration of the sprint
+     */
     private void buildIdealLine() {
+        //
         XYChart.Series<Number, Number> ideal = new XYChart.Series<>();
         ideal.setName("Ideal");
         ideal.getData().add(new XYChart.Data<>(0, appState.getSprintManager().getCurSprint().getTotalEffort()));
@@ -140,6 +143,10 @@ public class DashboardController extends BaseController {
         burndownChart.getData().add(ideal);
     }
 
+    /**
+     * Build the actual line. This line shows the amount of effort done on each day
+     * in actuality as the sprint progresses
+     */
     private void buildActualLine() {
         XYChart.Series<Number, Number> actual = new XYChart.Series<>();
         actual.setName("Actual");
@@ -147,6 +154,7 @@ public class DashboardController extends BaseController {
         // Get sprint data
         Sprint sprint = appState.getSprintManager().getCurSprint();
 
+        // Get the total dats and effort
         int totalDays = sprint.getTotalDays();
         float totalEffort = sprint.getTotalEffort();
 

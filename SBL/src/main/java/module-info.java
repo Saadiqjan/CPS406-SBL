@@ -3,6 +3,7 @@ module cps406.sbl {
     requires javafx.fxml;
     requires javafx.web;
     requires java.desktop;
+    requires java.logging;
 
 //    requires org.controlsfx.controls;
 //    requires com.dlsc.formsfx;

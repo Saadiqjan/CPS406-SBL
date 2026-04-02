@@ -1,22 +1,18 @@
 // Authors: Saadiq Shahsamand, Ali Zarabi
 // Filename: SprintController.java
 // Date Created: Mar 18 2026
-// Date Modified: Mar 31 2026
+// Date Modified: Apr 1 2026
 // Description: UI control for sprint management
 
 package com.cps406.controllers;
 
 import com.cps406.AppState;
 import com.cps406.model.Item;
-import com.cps406.model.SprintStorage;
 import com.cps406.model.Storage;
 import com.cps406.model.Task;
 import javafx.animation.PauseTransition;
-import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
@@ -29,10 +25,6 @@ import javafx.scene.control.CheckBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-
-import java.awt.*;
-import java.io.IOException;
-import java.util.function.UnaryOperator;
 
 public class SprintController extends BaseController {
     @FXML
@@ -90,11 +82,16 @@ public class SprintController extends BaseController {
 
     @FXML
     private void initialize() {
+        // Set up table columns of the sprint
         setTableColumns(sprintTable, nameCol, priorityCol, effortCol, timeCol, riskCol);
 
+        // Configure layout of labels
+        // Prevents labels displaying story and task of a label
+        // from getting cut off
         storyLabel.setWrapText(true);
         sprintTaskLabel.setWrapText(true);
 
+        // Configure task done and task description columns
         taskDoneCol.setCellValueFactory(cellData ->
                 new javafx.beans.property.SimpleBooleanProperty(cellData.getValue().isComplete()));
 
@@ -102,10 +99,12 @@ public class SprintController extends BaseController {
                 new PropertyValueFactory<>("description")
         );
 
-        taskDoneCol.setCellFactory(tc -> new TableCell<Task, Boolean>() {
+        // Non-empty tasks should have a checkbox to mark the task complete
+        taskDoneCol.setCellFactory(tc -> new TableCell<>() {
             private final CheckBox checkBox = new CheckBox();
 
             {
+                // Check box should mark or unmark a task for completion
                 checkBox.setOnAction(event -> {
                     Task task = getTableView().getItems().get(getIndex());
                     sprintTable.getSelectionModel().getSelectedItem().setTaskComplete(checkBox.isSelected(), task);
@@ -128,6 +127,7 @@ public class SprintController extends BaseController {
             }
         });
 
+        // Add a listener to the sprint table to detect when a sprint item is selected
         sprintTable.getSelectionModel().selectedItemProperty().addListener(
                 (observable, oldValue, selectedItem) -> {
                     if (selectedItem != null) {
@@ -136,6 +136,9 @@ public class SprintController extends BaseController {
                 }
         );
 
+        // Configure task table
+        // Creates a tooltip for a task when you hover over it
+        // This tool tip displays information about the task
         taskTable.setRowFactory(tv -> {
             TableRow<Task> row = new TableRow<>() {
                 @Override
@@ -200,13 +203,11 @@ public class SprintController extends BaseController {
             return row;
         });
 
-        /**
-         * Create a checklist for sprint items to mark complete/incomplete
-         */
+        // Create a checklist for sprint items to mark complete/incomplete
         completeCol.setCellValueFactory(cellData ->
                 new javafx.beans.property.SimpleBooleanProperty(cellData.getValue().isComplete()));
 
-        completeCol.setCellFactory(tc -> new TableCell<Item, Boolean>() {
+        completeCol.setCellFactory(tc -> new TableCell<>() {
             private final CheckBox checkBox = new CheckBox();
 
             {
@@ -240,26 +241,23 @@ public class SprintController extends BaseController {
         });
     }
 
+    /**
+     * go to dashboard
+     * @param event for stage
+     */
     @FXML
-    private void goToDashboard(ActionEvent event) throws IOException {
+    private void goToDashboard(ActionEvent event) {
         // Load dashboard scene
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/cps406/Dashboard.fxml"));
-        root = loader.load();
-
-        // Set the app state of the controller for the dashboard scene
-        DashboardController dbc = loader.getController();
-        dbc.setAppState(appState);
-
-        // Create and set the scene
-        stage = (Stage) ((Node)event.getSource()).getScene().getWindow();
-        scene = new Scene(root);
-        scene.getStylesheets().add(getClass().getResource("/com/cps406/styles.css").toExternalForm());
-        stage.setScene(scene);
-        stage.show();
+        loadDashboard(event);
     }
 
+    /**
+     * Complete a sprint, the sprint should be recorded and
+     * incomplete items should be returned to the product backlog
+     * @param event for stage
+     */
     @FXML
-    private void handleFinishSprint(ActionEvent event) throws IOException {
+    private void handleFinishSprint(ActionEvent event) {
         appState.getSprintManager().finishSprint(appState.getProductBacklog());
 
         // Save after finishing
@@ -277,22 +275,34 @@ public class SprintController extends BaseController {
         goToDashboard(event);
     }
 
+    /**
+     * add a task to a sprint item
+     */
     @FXML
     private void addTask () {
+        // Retrieve sprint item
         Item item = sprintTable.getSelectionModel().getSelectedItem();
 
+        // Do nothing if the item is null
         if (item == null) {
             return;
         }
 
+        // Prompt user with a popup to add the task
         showAddTaskPopup(item);
     }
 
+    /**
+     * popup that allows user to fill in fields to add a task to a sprint item
+     * @param item for popup
+     */
     private void showAddTaskPopup(Item item) {
+        // Create stage for popup
         Stage popupStage = new Stage();
         popupStage.initModality(Modality.APPLICATION_MODAL);
         popupStage.setTitle("Add Engineering Task");
 
+        // Create fields that the user needs to fill out
         Label descLabel = new Label("Description:");
         TextField descField = new TextField();
 
@@ -308,68 +318,27 @@ public class SprintController extends BaseController {
         TextField timeField = new TextField();
         timeField.setPromptText("(hours)");
 
-        UnaryOperator<TextFormatter.Change> priorityFilter = change -> {
-            String text = change.getControlNewText();
+        // add filters to certain fields to ensure correct input
+        addUnaryOperator(priorityField, effortField, timeField);
 
-            if (text.isEmpty()) return change;
-            if (!text.matches("\\d+")) return null;
-
-            int value = Integer.parseInt(text);
-            if (value < 1 || value > 3) return null;
-
-            return change;
-        };
-
-        priorityField.setTextFormatter(new TextFormatter<>(priorityFilter));
-
-        UnaryOperator<TextFormatter.Change> effortFilter = change -> {
-            String text = change.getControlNewText();
-
-            if (text.isEmpty()) return change;
-            if (!text.matches("\\d*(\\.\\d*)?")) return null;
-
-            try {
-                float value = Float.parseFloat(text);
-                if (value < 1 || value > 5) return null;
-            } catch (NumberFormatException e) {
-                return null;
-            }
-
-            return change;
-        };
-
-        effortField.setTextFormatter(new TextFormatter<>(effortFilter));
-
-        UnaryOperator<TextFormatter.Change> timeFilter = change -> {
-            String text = change.getControlNewText();
-
-            if (text.isEmpty()) return change;
-            if (!text.matches("\\d*(\\.\\d*)?")) return null;
-
-            try {
-                float value = Float.parseFloat(text);
-                if (value < 0) return null;
-            } catch (NumberFormatException e) {
-                return null;
-            }
-
-            return change;
-        };
-
-        timeField.setTextFormatter(new TextFormatter<>(timeFilter));
+        // Create the button to save and add task
         Button saveButton = new Button("Save");
         Button cancelButton = new Button("Cancel");
 
+        // Set action for save button
         saveButton.setOnAction(e -> {
+            // Retrieve field values
             String description = descField.getText().trim();
             String priorityText = priorityField.getText().trim();
             String effortText = effortField.getText().trim();
             String timeText = timeField.getText().trim();
 
+            // Attempt to parse integer and float values
             int priority;
             float effort;
             float time;
 
+            // Catch any errors
             try {
                 if (description.isEmpty() || effortText.isEmpty() || priorityText.isEmpty() || timeText.isEmpty()) {
                     throw new NumberFormatException();
@@ -383,28 +352,34 @@ public class SprintController extends BaseController {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("Invalid Input");
                 alert.setHeaderText("Incorrect Format");
-                alert.setContentText("Please ensure all numeric fields are filled correctly:\n" +
-                        "- Priority: integer (1-3)\n" +
-                        "- Effort: number (1-5)\n" +
-                        "- Time: positive number");
+                alert.setContentText("""
+                        Please ensure all numeric fields are filled correctly:
+                        - Priority: integer (1-3)
+                        - Effort: number (1-5)
+                        - Time: positive number""");
 
                 alert.showAndWait();
                 return;
             }
 
+            // Create new task
             Task newTask = new Task(description, priority, effort, time);
 
+            // Add task to the sprint item
             item.addTask(newTask);
 
+            // Add task to task table
             taskTable.getItems().add(newTask);
 
+            // Save the sprint and close popup window
             appState.saveCurSprint();
-
             popupStage.close();
         });
 
+        // Close popup upon cancellation
         cancelButton.setOnAction(e -> popupStage.close());
 
+        // Configure stage layout
         HBox buttonBox = new HBox(10, saveButton, cancelButton);
         VBox layout = new VBox(10,
                 descLabel, descField,
@@ -414,36 +389,48 @@ public class SprintController extends BaseController {
                 buttonBox
         );
 
+        // Set scene
         layout.setStyle("-fx-padding: 15;");
         Scene scene = new Scene(layout, 300, 400);
 
+        // Display popup
         popupStage.setScene(scene);
         popupStage.showAndWait();
     }
 
+    /**
+     * Display and item when it is selected from the sprint backlog table
+     * @param item to be displayed
+     */
     private void displayItem(Item item) {
+        // Retrieve item attributes and display
+        // Risk is N/A if negative
         nameLabel.setText("Requirement: " + item.getName());
         storyLabel.setText(item.getStory());
         sprintTaskLabel.setText(item.getTask());
         priorityLabel.setText("Priority: " + item.getPriority());
         effortLabel.setText("Effort: " + item.getEffort());
         timeLabel.setText("Time: " + item.getTime() + "h");
-
-        taskTable.getItems().clear();
-
-        for (Task task : item.getTasks()) {
-            taskTable.getItems().add(task);
-        }
-
         if (item.getRisk() == -1) {
             riskLabel.setText("Risk: N/A");
         } else {
             riskLabel.setText("Risk: " + item.getRisk());
         }
+
+        // Clear the task table
+        taskTable.getItems().clear();
+
+        // Add selected item's tasks to task table
+        for (Task task : item.getTasks()) {
+            taskTable.getItems().add(task);
+        }
     }
 
-
-
+    /**
+     * Set the app state
+     * @param appState the app state
+     *
+     */
     public void setAppState(AppState appState) {
         super.setAppState(appState);
 
