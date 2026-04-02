@@ -51,9 +51,6 @@ public class Item implements Comparable<Item>, Serializable {
         this.time = time;
         this.risk = risk;
 
-        // Set status
-        //status = Status.TODO;
-
         // Set up list of engineering tasks related to the item
         tasks = new ArrayList<>();
 
