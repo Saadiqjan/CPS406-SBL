@@ -379,10 +379,24 @@ public class BacklogController extends BaseController {
 
         }
         catch (NumberFormatException nfe) {
-            //TODO: add alert
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Invalid Input");
+            alert.setHeaderText("Incorrect Format");
+            alert.setContentText("Please ensure all numeric fields are filled correctly:\n" +
+                    "- Priority: integer (1-3)\n" +
+                    "- Effort: number (1-5)\n" +
+                    "- Time: positive number\n" +
+                    "- Risk: number (1-5, optional)");
+
+            alert.showAndWait();
         }
         catch (RuntimeException e) {
-            //TODO: add alert
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error Updating Item");
+            alert.setHeaderText("Could not update backlog item");
+            alert.setContentText(e.getMessage());
+
+            alert.showAndWait();
         }
     }
     private void showStatusMessage(String message) {
