@@ -11,8 +11,6 @@ import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 
-import static java.util.concurrent.TimeUnit.DAYS;
-
 public class Sprint implements Serializable {
     private static final long serialVersionUID = 1L;
     // Store the total number of sprints that have occured
@@ -32,8 +30,7 @@ public class Sprint implements Serializable {
 
     private int totalDays;
     private float totalEffort;
-    private int totalItems;
-    private int itemsCompleted;
+    private float effortCompleted;
 
     /**
      * Create sprint
@@ -71,7 +68,6 @@ public class Sprint implements Serializable {
 
     public boolean addItem(Item item) {
         if (items.add(item)) {
-            totalItems++;
             totalEffort += item.getEffort();
             return true;
         }
@@ -81,7 +77,7 @@ public class Sprint implements Serializable {
 
     public boolean removeItem(Item item) {
         if (removeItem(item)) {
-            totalItems--;
+            totalEffort -= item.getEffort();
             return true;
         }
 
@@ -89,18 +85,19 @@ public class Sprint implements Serializable {
     }
 
     public void completeItem(boolean completion, Item item) {
-        item.setComplete(completion, getCurrentDay());
-
-        if (completion) {
-            itemsCompleted ++;
-        } else {
-            itemsCompleted--;
+        if (completion && !item.isComplete()) {
+            effortCompleted += item.getEffort();
         }
+        else if (!completion && item.isComplete()) {
+            effortCompleted -= item.getEffort();
+        }
+
+        item.setComplete(completion, getCurrentDay());
     }
 
     // Calculate Progess
     public double getProgress() {
-        return (double)itemsCompleted / (double)totalItems;
+        return effortCompleted / totalEffort;
     }
 
     public float getRemEffort() {
