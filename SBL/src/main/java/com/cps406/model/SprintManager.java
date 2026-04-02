@@ -7,12 +7,14 @@
 
 package com.cps406.model;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 
 public class SprintManager implements Serializable {
+    @Serial
     private static final long serialVersionUID = 1L;
 
     // Store current sprint

@@ -19,18 +19,17 @@ public class Sprint implements Serializable {
     private static int totalSprints = 0;
 
     // Store current sprint number, capacity, start and end dates, and status
-    private int curSprint;
-    private int capacity;
-    private LocalDate start;
-    private LocalDate end;
-    private Status status;
+    private final int curSprint;
+    private final int capacity;
+    private final LocalDate start;
+    private final LocalDate end;
 
     // Store the items in the sprint
     private ArrayList<Item> items;
 
     // Store progress
 
-    private int totalDays;
+    private final int totalDays;
     private float totalEffort;
     private float effortCompleted;
 
@@ -49,7 +48,6 @@ public class Sprint implements Serializable {
         this.capacity = capacity;
         start = LocalDate.now();
         this.end = end;
-        this.status = Status.IN_PROGRESS;
 
         totalDays = duration * 7;
         items = new ArrayList<>();
@@ -78,7 +76,7 @@ public class Sprint implements Serializable {
     }
 
     public boolean removeItem(Item item) {
-        if (removeItem(item)) {
+        if (items.remove(item)) {
             totalEffort -= item.getEffort();
             return true;
         }

@@ -6,10 +6,12 @@
 
 package com.cps406.model;
 
+import java.io.Serial;
 import java.util.ArrayList;
 import java.io.Serializable;
 
 public class Item implements Comparable<Item>, Serializable {
+    @Serial
     private static final long serialVersionUID = 1L;
 
     // Store item details
@@ -53,7 +55,7 @@ public class Item implements Comparable<Item>, Serializable {
         //status = Status.TODO;
 
         // Set up list of engineering tasks related to the item
-        tasks = new ArrayList<Task>();
+        tasks = new ArrayList<>();
 
         // Set completion status
         complete = false;

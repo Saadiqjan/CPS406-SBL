@@ -6,10 +6,12 @@
 
 package com.cps406.model;
 
+import java.io.Serial;
 import java.util.ArrayList;
 import java.io.Serializable;
 
 public class ProductBacklog implements Serializable {
+    @Serial
     private static final long serialVersionUID = 1L;
 
     // Store list of items
@@ -19,7 +21,7 @@ public class ProductBacklog implements Serializable {
      * Create new product backlog
      */
     public ProductBacklog() {
-        items = new ArrayList<Item>();
+        items = new ArrayList<>();
     }
 
     // Get product backlog

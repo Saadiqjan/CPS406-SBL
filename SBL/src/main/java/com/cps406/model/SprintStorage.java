@@ -1,12 +1,17 @@
-// Author: Ali Zarabi, Harjap Uppal
+// Author: Ali Zarabi, Harjap Uppal, Saadiq Shahsamand
 // Filename: SprintStorage.java
 // Creation Date: Mar 30 2026
+// Modified Date: Apr 2 2026
 // Description: This storage script saves sprint backlog into "sprint.dat" file.
 
 package com.cps406.model;
 
+import com.cps406.Main;
+
 import java.io.*;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class SprintStorage {
 
@@ -18,8 +23,9 @@ public class SprintStorage {
         try (ObjectOutputStream out =
                      new ObjectOutputStream(new FileOutputStream(CUR_FILE))) {
             out.writeObject(curSprint);
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (IOException ioe) {
+            Logger.getLogger(Main.class.getName())
+                    .log(Level.SEVERE, "Failed to save sprint", ioe);
         }
     }
 
@@ -32,7 +38,8 @@ public class SprintStorage {
                      new ObjectInputStream(new FileInputStream(file))) {
             return (Sprint) in.readObject();
         } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
+            Logger.getLogger(Main.class.getName())
+                    .log(Level.SEVERE, "Failed to load current sprint", e);
             return null;
         }
     }
@@ -45,8 +52,9 @@ public class SprintStorage {
         try (ObjectOutputStream out =
                      new ObjectOutputStream(new FileOutputStream(PREV_FILE))) {
             out.writeObject(prevSprints);
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (IOException ioe) {
+            Logger.getLogger(Main.class.getName())
+                    .log(Level.SEVERE, "Failed to save complete sprint", ioe);
         }
     }
 
@@ -59,7 +67,8 @@ public class SprintStorage {
                      new ObjectInputStream(new FileInputStream(file))) {
             return (ArrayList<Sprint>) in.readObject();
         } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
+            Logger.getLogger(Main.class.getName())
+                    .log(Level.SEVERE, "Failed to load previous sprints", e);
             return new ArrayList<>();
         }
     }
