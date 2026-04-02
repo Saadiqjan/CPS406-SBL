@@ -2,9 +2,9 @@
 // Filename: CreateSprintController.java
 // Date Created: Mar 24 2026
 // Date Modified: Mar 29 2026
-// Description: Controller for sprint creation scene.
-//              Lets you generate a list for the upcoming sprint
-//              and allows for modification of that list before approval
+// Description: Controller for the sprint creation view.
+//              Allows users to generate, modify, and finalize a sprint backlog
+//              based on available capacity and product backlog items.
 
 package com.cps406.controllers;
 
@@ -30,11 +30,11 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 
 public class CreateSprintController extends BaseController {
-    // Store labels
+    // Displays current sprint capacity usage (time used vs total capacity)
     @FXML
     private Label capacityLabel;
 
-    // Store text fields
+    // Input fields for sprint modifications
     @FXML
     private TextField durationField;
 
@@ -94,7 +94,8 @@ public class CreateSprintController extends BaseController {
     ObservableList<Item> sbItems    = FXCollections.observableArrayList();
 
     /**
-     * initialize cell values of each cell in the backlog table
+     * Initializes tables, column bindings, button cells, and input listeners.
+     * Sets up interaction between product backlog and sprint backlog tables.
      */
     @FXML
     private void initialize() {
@@ -115,7 +116,7 @@ public class CreateSprintController extends BaseController {
                 new SimpleObjectProperty<>(data.getValue())
         );
 
-        // Create a
+        // Add "+" button to move items into sprint backlog
         addCol.setCellFactory(col -> new TableCell<>() {
             private final Button btn = new Button("+");
 
@@ -133,6 +134,7 @@ public class CreateSprintController extends BaseController {
             }
         });
 
+        // Add "×" button to remove items from sprint backlog
         removeCol.setCellFactory(col -> new TableCell<>() {
             private final Button btn = new Button("×");
 
@@ -161,7 +163,8 @@ public class CreateSprintController extends BaseController {
     }
 
     /**
-     * Update the total time of the sprint table
+     * Recalculates total estimated time of sprint items
+     * and updates capacity display
      */
     private void updateTotalTime() {
         // Reset total time
@@ -177,7 +180,10 @@ public class CreateSprintController extends BaseController {
     }
 
     /**
-     * update the capacity of the sprint
+     * Recalculates sprint capacity based on number of developers
+     * and sprint duration.
+     * Capacity = developers × weeks × 30 hours (adjusted for overhead)
+     * 
      * @param source which textfield the new value came from
      * @param newVal the new value in the textfield
      */
@@ -186,10 +192,7 @@ public class CreateSprintController extends BaseController {
             // Start with the new value
             capacity = Integer.parseInt(newVal);
 
-            // multiply by the value from the unchanged field and multiply by 30
-            // if you are wondering why 30:
-            // Capacity = # of devs * # of working hours
-            // We assume 30 working hours in a work week to account for overhead, that's 6/8 hours a day
+            // Combine with other input field and apply weekly capacity factor (30 hours)
             if (source == numDevField) {
                 capacity *= Integer.parseInt(durationField.getText()) * 30;
             }
@@ -236,7 +239,8 @@ public class CreateSprintController extends BaseController {
     }
 
     /**
-     * Generate a sprint backlog and display it
+     * Generates an optimized sprint backlog based on capacity
+     * and updates the UI accordingly
      */
     @FXML
     private void generateSprint() {
@@ -261,7 +265,7 @@ public class CreateSprintController extends BaseController {
     }
 
     /**
-     * create the sprint
+     * Finalizes sprint creation and transitions to sprint view
      * @param event
      */
     @FXML
@@ -297,7 +301,7 @@ public class CreateSprintController extends BaseController {
     }
 
     /**
-     * Clear the sprint table
+     * Moves all items back to product backlog and clears sprint selection
      */
     @FXML
     private void clearSprintTable() {
@@ -354,7 +358,7 @@ public class CreateSprintController extends BaseController {
     }
 
     /**
-     * Set the appstate
+     * Set the appstate and update product backlog table
      * @param appState
      */
     @Override

@@ -2,8 +2,8 @@
 // Filename: BaseController.java
 // Date Created: Mar 24 2026
 // Date Modified: Mar 25 2026
-// Description: Controller super class that contains methods and attributes
-//              all controls will require
+// Description: Base controller class providing shared functionality for all UI controllers.
+//              Includes scene management, access to AppState, and reusable table configuration logic.
 
 package com.cps406.controllers;
 
@@ -28,7 +28,9 @@ public class BaseController {
     // App state contains the product backlog and sprint manager
     protected AppState appState;
 
-    // Set app state
+    /**
+     * Set appstate
+     */
     public void setAppState(AppState appState) {
         this.appState = appState;
     }
@@ -97,8 +99,10 @@ public class BaseController {
                 protected void updateItem(Item item, boolean empty) {
                     super.updateItem(item, empty);
 
+                    // Reset style for empty rows
                     if (empty || item == null) {
                         setStyle("");
+                    // Visually indicate completed items
                     } else if (item.isComplete()) {
                         setStyle("-fx-opacity: 0.5;");
                     } else {
@@ -106,11 +110,13 @@ public class BaseController {
                     }
                 }
             };
+            // Tooltip for displaying detailed item information
             Tooltip tooltip = new Tooltip();
             tooltip.setWrapText(true);
             tooltip.setMaxWidth(300);
             PauseTransition delay = new PauseTransition(Duration.seconds(0.75));
 
+            // Show tooltip after delay when hovering over a row
             row.setOnMouseEntered(event -> {
                 if (row.isEmpty() || row.getItem() == null) {
                     return;
@@ -126,6 +132,7 @@ public class BaseController {
                                 "Risk: " + item.getRisk()
                 );
 
+                // Only show tooltip if cursor remains on the row
                 delay.setOnFinished(e -> {
                     if (row.isHover() && !row.isEmpty()) {
                         tooltip.show(
@@ -139,11 +146,13 @@ public class BaseController {
                 delay.playFromStart();
             });
 
+            // Cancel tooltip if cursor leaves the row
             row.setOnMouseExited(event -> {
                 delay.stop();
                 tooltip.hide();
             });
 
+            // Keep tooltip positioned near cursor while moving
             row.setOnMouseMoved(event -> {
                 if (tooltip.isShowing()) {
                     tooltip.setX(event.getScreenX() + 10);
