@@ -16,7 +16,6 @@ import javafx.fxml.*;
 import javafx.scene.*;
 import javafx.scene.control.*;
 import java.util.Optional;
-import java.io.IOException;
 import javafx.animation.PauseTransition;
 import javafx.util.Duration;
 
