@@ -12,7 +12,6 @@ package com.cps406;
 
 import com.cps406.model.ProductBacklog;
 import com.cps406.model.SprintManager;
-import com.cps406.model.SprintStorage;
 import com.cps406.model.Storage;
 
 public class AppState {

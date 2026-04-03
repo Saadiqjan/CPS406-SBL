@@ -64,12 +64,26 @@ public class SprintStorage {
         if (!file.exists()) return new ArrayList<>();
 
         try (ObjectInputStream in =
-                     new ObjectInputStream(new FileInputStream(file))) {
-            return (ArrayList<Sprint>) in.readObject();
+                    new ObjectInputStream(new FileInputStream(file))) {
+
+            Object obj = in.readObject();
+
+            if (obj instanceof ArrayList<?>) {
+                ArrayList<?> list = (ArrayList<?>) obj;
+                ArrayList<Sprint> result = new ArrayList<>();
+
+                for (Object item : list) {
+                    if (item instanceof Sprint) {
+                        result.add((Sprint) item);
+                    }
+                }
+
+                return result;
+            }
         } catch (IOException | ClassNotFoundException e) {
             Logger.getLogger(Main.class.getName())
                     .log(Level.SEVERE, "Failed to load previous sprints", e);
-            return new ArrayList<>();
         }
+        return new ArrayList<>();
     }
 }

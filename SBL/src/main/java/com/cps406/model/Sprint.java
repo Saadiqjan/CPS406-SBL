@@ -21,8 +21,8 @@ public class Sprint implements Serializable {
     // Store current sprint number, capacity, start and end dates, and status
     private final int curSprint;
     private final int capacity;
-    private final LocalDate start;
     private final LocalDate end;
+    private final LocalDate start;
 
     // Store the items in the sprint
     private ArrayList<Item> items;
@@ -127,4 +127,17 @@ public class Sprint implements Serializable {
     public int getCurrentDay() {
         return (int) ChronoUnit.DAYS.between(start, LocalDate.now());
     }
+
+    public int getCurSprint() {
+        return curSprint;
+    }
+
+    public int getCapacity() {
+        return capacity;
+    }
+
+    public LocalDate getEnd() {
+        return end;
+    }
+
 }

@@ -13,7 +13,6 @@ import com.cps406.model.Item;
 import com.cps406.model.ProductBacklog;
 import javafx.event.ActionEvent;
 import javafx.fxml.*;
-import javafx.scene.*;
 import javafx.scene.control.*;
 import java.util.Optional;
 import javafx.animation.PauseTransition;
