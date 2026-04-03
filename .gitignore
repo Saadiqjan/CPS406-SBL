@@ -57,3 +57,8 @@ backlog.dat
 sprint.dat
 cur_sprint.dat
 prev_sprints.dat
+
+# ==========================
+# jpackage compile
+# ==========================
+/SBL/appSBL/
