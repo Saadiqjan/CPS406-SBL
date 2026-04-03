@@ -202,6 +202,7 @@ public class BaseController {
                                 "Task:\n" + item.getTask() + "\n\n" +
                                 "Priority: " + item.getPriority() + "\n" +
                                 "Effort: " + item.getEffort() + "\n" +
+                                "Time Estimate: " + item.getTime() + "\n" +
                                 "Risk: " + item.getRisk()
                 );
 
