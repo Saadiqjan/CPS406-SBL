@@ -20,9 +20,9 @@ public class DatabaseConnection {
             stmt.execute(
                 """
                     CREATE TABLE IF NOT EXISTS product_backlog (\
-                    item_name varchar(30)\
-                    story varchar(300)\
-                    description varchar(300)\
+                    item_name TEXT UNIQUE NOT NULL\
+                    story TEXT\
+                    description TEXT\
                     priority INT\
                     effort FLOAT\
                     time_estimate FLOAT\
