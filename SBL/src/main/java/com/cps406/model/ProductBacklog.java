@@ -6,7 +6,10 @@
 
 package com.cps406.model;
 
+import com.cps406.DatabaseConnection;
+
 import java.io.Serial;
+import java.sql.*;
 import java.util.ArrayList;
 import java.io.Serializable;
 
@@ -15,7 +18,7 @@ public class ProductBacklog implements Serializable {
     private static final long serialVersionUID = 1L;
 
     // Store list of items
-    private ArrayList<Item> items;
+    private ArrayList<Item>  items;
 
     /**
      * Create new product backlog
@@ -45,6 +48,27 @@ public class ProductBacklog implements Serializable {
 
         // Add new item
         items.add(newItem);
+
+        String query = "INSERT OR IGNORE INTO product_backlog " +
+                "(item_name, story, task, priority, effort, time_estimate, risk) VALUES " +
+                "(?, ?, ?, ?, ?, ?, ?)";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+            pstmt.setString(1, newItem.getName());
+            pstmt.setString(2, newItem.getStory());
+            pstmt.setString(3, newItem.getTask());
+            pstmt.setInt(4, newItem.getPriority());
+            pstmt.setFloat(5, newItem.getEffort());
+            pstmt.setFloat(6, newItem.getTime());
+            pstmt.setFloat(7, newItem.getRisk());
+
+            pstmt.executeQuery();
+        }
+        catch (SQLException sqe) {
+
+        }
+
         return true;
     }
 

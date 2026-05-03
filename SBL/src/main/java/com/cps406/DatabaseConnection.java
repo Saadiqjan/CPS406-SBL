@@ -22,7 +22,7 @@ public class DatabaseConnection {
                     CREATE TABLE IF NOT EXISTS product_backlog (\
                     item_name TEXT UNIQUE NOT NULL\
                     story TEXT\
-                    description TEXT\
+                    task TEXT\
                     priority INT\
                     effort FLOAT\
                     time_estimate FLOAT\
