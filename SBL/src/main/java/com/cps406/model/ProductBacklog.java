@@ -29,6 +29,32 @@ public class ProductBacklog implements Serializable {
 
     // Get product backlog
     public ArrayList<Item> getBacklog() {
+        ArrayList<Item> items = new ArrayList<>();
+
+        String query = "SELECT * FROM product_backlog";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query);
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                Item item = new Item(
+                        rs.getString("item_name"),
+                        rs.getString("story"),
+                        rs.getString("description"),
+                        rs.getInt("priority"),
+                        rs.getFloat("effort"),
+                        rs.getFloat("time_estimate"),
+                        rs.getFloat("risk")
+                );
+
+                items.add(item);
+            }
+        }
+        catch (SQLException sqe) {
+
+        }
+
         return items;
     }
 
