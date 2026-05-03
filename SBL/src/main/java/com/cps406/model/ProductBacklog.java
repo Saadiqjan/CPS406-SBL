@@ -7,11 +7,14 @@
 package com.cps406.model;
 
 import com.cps406.DatabaseConnection;
+import com.cps406.Main;
 
 import java.io.Serial;
 import java.sql.*;
 import java.util.ArrayList;
 import java.io.Serializable;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class ProductBacklog implements Serializable {
     @Serial
@@ -24,7 +27,7 @@ public class ProductBacklog implements Serializable {
      * Create new product backlog
      */
     public ProductBacklog() {
-        items = new ArrayList<>();
+
     }
 
     // Get product backlog
@@ -52,7 +55,8 @@ public class ProductBacklog implements Serializable {
             }
         }
         catch (SQLException sqe) {
-
+            Logger.getLogger(Main.class.getName())
+                    .log(Level.SEVERE, "SQL Execution Failed", sqe);
         }
 
         return items;
@@ -64,17 +68,6 @@ public class ProductBacklog implements Serializable {
      * @return true if successful
      */
     public boolean addItem(Item newItem) {
-        // Check if any existing item shares the same name
-        // If yes, do not add new item
-        for (Item item : items) {
-            if (item.getName().equals(newItem.getName())) {
-                return false;
-            }
-        }
-
-        // Add new item
-        items.add(newItem);
-
         String query = "INSERT OR IGNORE INTO product_backlog " +
                 "(item_name, story, task, priority, effort, time_estimate, risk) VALUES " +
                 "(?, ?, ?, ?, ?, ?, ?)";
@@ -92,29 +85,76 @@ public class ProductBacklog implements Serializable {
             pstmt.executeQuery();
         }
         catch (SQLException sqe) {
-
+            Logger.getLogger(Main.class.getName())
+                    .log(Level.SEVERE, "SQL Execution Failed", sqe);
         }
 
         return true;
     }
 
     // Remove item by name
-    public void removeItem(String itemName) {
-        items.removeIf(item -> item.getName().equals(itemName));
+    public boolean removeItem(String itemName) {
+        String query = "DELETE FROM product_backlog WHERE item_name = ?";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+
+            pstmt.setString(1, itemName);
+
+            int rowsAffected = pstmt.executeUpdate();
+
+            return rowsAffected > 0;
+        }
+        catch (SQLException sqe) {
+            Logger.getLogger(Main.class.getName())
+                    .log(Level.SEVERE, "SQL Execution Failed", sqe);
+        }
+
+        return false;
     }
 
     // Get item by name
-    public Item getItem(String name) {
-        // Loop through each item and check name equality
-        for (Item item : items) {
-            if (item.getName().equals(name)) {
-                return item;
+    public Item getItem(String itemName) {
+        String query = "SELECT * FROM product_backlog WHERE item_name = ?";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+
+            pstmt.setString(1, itemName);
+
+            ResultSet rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                return new Item(
+                        rs.getString("item_name"),
+                        rs.getString("story"),
+                        rs.getString("task"),
+                        rs.getInt("priority"),
+                        rs.getInt("effort"),
+                        rs.getInt("time_estimate"),
+                        rs.getInt("risk")
+                );
             }
+        }
+        catch (SQLException sqe) {
+            Logger.getLogger(Main.class.getName())
+                    .log(Level.SEVERE, "SQL Execution Failed", sqe);
         }
 
         return null;
     }
 
     // Clear the Backlog ArrayList
-    public void clearBacklog() {items.clear();}
+    public void clearBacklog() {
+        String query = "DELETE FROM product_backlog";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+            pstmt.executeUpdate();
+        }
+        catch (SQLException sqe) {
+            Logger.getLogger(Main.class.getName())
+                    .log(Level.SEVERE, "SQL Execution Failed", sqe);
+        }
+    }
 }
