@@ -165,9 +165,6 @@ public class BacklogController extends BaseController {
                 throw new RuntimeException("Item with this name already exists");
             }
 
-            // Save backlog
-            appState.saveBacklog();
-
             // Show status method upon successful completion
             showStatusMessage("Backlog item added successfully.");
 
@@ -236,7 +233,6 @@ public class BacklogController extends BaseController {
             if (result.isPresent() && result.get() == yesButton) {
                 appState.getProductBacklog().clearBacklog();
                 backlogTable.getItems().clear();
-                appState.saveBacklog();
             }
         }
     }
@@ -292,8 +288,7 @@ public class BacklogController extends BaseController {
             selectedItem.setTime(item.getTime());
             selectedItem.setRisk(item.getRisk());
 
-            // Save backlog
-            appState.saveBacklog();
+            // Refresh backlog
             backlogTable.refresh();
 
             // Show status method upon successful completion

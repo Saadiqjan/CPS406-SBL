@@ -1,6 +1,8 @@
 package com.cps406;
 
 import java.sql.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class DatabaseConnection {
     private static final String URL = "jdbc:sqlite:app.db";
@@ -30,8 +32,9 @@ public class DatabaseConnection {
                     )"""
             );
         }
-        catch (SQLException se) {
-
+        catch (SQLException sqe) {
+            Logger.getLogger(Main.class.getName())
+                    .log(Level.SEVERE, "SQL Execution Failed", sqe);
         }
     }
 }
