@@ -22,14 +22,38 @@ public class DatabaseConnection {
             stmt.execute(
                 """
                     CREATE TABLE IF NOT EXISTS product_backlog (\
-                    item_name TEXT UNIQUE NOT NULL\
-                    story TEXT\
-                    task TEXT\
-                    priority INT\
-                    effort FLOAT\
-                    time_estimate FLOAT\
-                    risk FLOAT\
+                        item_name TEXT UNIQUE NOT NULL\
+                        story TEXT\
+                        task TEXT\
+                        priority INT\
+                        effort FLOAT\
+                        time_estimate FLOAT\
+                        risk FLOAT\
                     )"""
+            );
+
+            stmt.execute(
+                 """
+                 CREATE TABLE IF NOT EXISTS sprints (\
+                     sprint_id INT PRIMARY KEY AUTOINCREMENT,\
+                     sprint_name TEXT NOT NULL,\
+                     start_date TEXT NOT NULL,\
+                     end_date TEXT NOT NULL,\
+                     is_active INT DEFAULT 0\
+                 )"""
+            );
+
+            stmt.execute(
+                """
+                CREATE TABLE IF NOT EXISTS sprint_items (\
+                    sprint_id INT,\
+                    item_name TEXT,\
+                    completed INT DEFAULT 0,\
+                    completed_day TEXT,\
+                    PRIMARY KEY (sprint_id, item_name),\
+                    FOREIGN KEY (sprint_id) REFERENCES sprints(sprint_id),\
+                    FOREIGN KEY (item_name) REFERENCES product_backlog(item_name)\
+                )"""
             );
         }
         catch (SQLException sqe) {
