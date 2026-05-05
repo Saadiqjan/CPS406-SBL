@@ -22,12 +22,12 @@ public class DatabaseConnection {
             stmt.execute(
                 """
                     CREATE TABLE IF NOT EXISTS product_backlog (\
-                        item_name TEXT UNIQUE NOT NULL\
-                        story TEXT\
-                        task TEXT\
-                        priority INT\
-                        effort FLOAT\
-                        time_estimate FLOAT\
+                        item_name TEXT UNIQUE NOT NULL,\
+                        story TEXT,\
+                        task TEXT,\
+                        priority INT,\
+                        effort FLOAT,\
+                        time_estimate FLOAT,\
                         risk FLOAT\
                     )"""
             );
@@ -35,7 +35,7 @@ public class DatabaseConnection {
             stmt.execute(
                  """
                  CREATE TABLE IF NOT EXISTS sprints (\
-                     sprint_id INT PRIMARY KEY AUTOINCREMENT,\
+                     sprint_id INTEGER PRIMARY KEY AUTOINCREMENT,\
                      sprint_name TEXT NOT NULL,\
                      start_date TEXT NOT NULL,\
                      end_date TEXT NOT NULL,\
