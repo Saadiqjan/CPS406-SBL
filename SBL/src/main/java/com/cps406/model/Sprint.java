@@ -19,7 +19,7 @@ public class Sprint implements Serializable {
     private static int totalSprints = 0;
 
     // Store current sprint number, capacity, start and end dates, and status
-    private final int curSprint;
+    private final int sprintID;
     private final int capacity;
     private final LocalDate end;
     private final LocalDate start;
@@ -38,10 +38,9 @@ public class Sprint implements Serializable {
      * @param capacity of the sprint
      * @param end date of the sprint
      */
-    public Sprint(int capacity, LocalDate end, int duration) {
+    public Sprint(int sprintID, int capacity, LocalDate end, int duration) {
         // Set current sprint and increase total sprint count
-        totalSprints++;
-        curSprint = totalSprints;
+        this.sprintID = sprintID;
 
         // Store parameters
         // Start is set to current date
@@ -54,8 +53,11 @@ public class Sprint implements Serializable {
     }
 
     // Get items
-    public ArrayList<Item> getItems() {
-        return items;
+//    public ArrayList<Item> getItems() {
+//        return items;
+//    }
+    public int getID() {
+        return sprintID;
     }
 
     public int getTotalDays() {
@@ -126,10 +128,6 @@ public class Sprint implements Serializable {
 
     public int getCurrentDay() {
         return (int) ChronoUnit.DAYS.between(start, LocalDate.now());
-    }
-
-    public int getCurSprint() {
-        return curSprint;
     }
 
     public int getCapacity() {

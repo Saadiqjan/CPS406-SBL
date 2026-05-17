@@ -36,9 +36,9 @@ public class DatabaseConnection {
                  """
                  CREATE TABLE IF NOT EXISTS sprints (\
                      sprint_id INTEGER PRIMARY KEY AUTOINCREMENT,\
-                     sprint_name TEXT NOT NULL,\
-                     start_date TEXT NOT NULL,\
+                     capacity INT,\
                      end_date TEXT NOT NULL,\
+                     duration INT,\
                      is_active INT DEFAULT 0\
                  )"""
             );

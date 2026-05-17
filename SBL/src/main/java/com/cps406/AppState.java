@@ -36,7 +36,7 @@ public class AppState {
     // save current sprint
     public void saveCurSprint() {
         if (sprintManager.getCurSprint() != null) {
-            sprintManager.setCurSprint(sprintManager.getCurSprint());
+            //sprintManager.setCurSprint(sprintManager.getCurSprint());
         }
     }
 
