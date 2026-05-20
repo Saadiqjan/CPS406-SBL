@@ -20,9 +20,6 @@ public class ProductBacklog implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
-    // Store list of items
-    private ArrayList<Item>  items;
-
     /**
      * Create new product backlog
      */
@@ -48,7 +45,8 @@ public class ProductBacklog implements Serializable {
                         rs.getInt("priority"),
                         rs.getFloat("effort"),
                         rs.getFloat("time_estimate"),
-                        rs.getFloat("risk")
+                        rs.getFloat("risk"),
+                        rs.getInt("complete") != 0
                 );
 
                 items.add(item);
@@ -132,7 +130,8 @@ public class ProductBacklog implements Serializable {
                         rs.getInt("priority"),
                         rs.getInt("effort"),
                         rs.getInt("time_estimate"),
-                        rs.getInt("risk")
+                        rs.getInt("risk"),
+                        rs.getInt("complete") != 0
                 );
             }
         }

@@ -23,9 +23,6 @@ public class SprintManager implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
-    // Store current sprint
-    private Sprint curSprint;
-
     public SprintManager() {
         // Load current sprint if it exists
         //curSprint = SprintStorage.loadCurSprint();
@@ -44,7 +41,9 @@ public class SprintManager implements Serializable {
                     rs.getInt("sprint_id"),
                     rs.getInt("capacity"),
                     LocalDate.parse(rs.getString("end_date")),
-                    rs.getInt("duration")
+                    rs.getInt("duration"),
+                    rs.getFloat("total_effort"),
+                    rs.getFloat("effort_completed")
                 );
             }
         }
@@ -67,10 +66,12 @@ public class SprintManager implements Serializable {
 
             while (rs.next()) {
                 prevSprints.add(new Sprint(
-                        rs.getInt("sprint_id"),
-                        rs.getInt("capacity"),
-                        LocalDate.parse(rs.getString("end_date")),
-                        rs.getInt("duration")
+                    rs.getInt("sprint_id"),
+                    rs.getInt("capacity"),
+                    LocalDate.parse(rs.getString("end_date")),
+                    rs.getInt("duration"),
+                    rs.getFloat("total_effort"),
+                    rs.getFloat("effort_completed")
                 ));
             }
         }
@@ -125,6 +126,7 @@ public class SprintManager implements Serializable {
 
         for (Item item : selectedItems) {
             addSprintItem(item, getCurSprint().getID());
+
             backlog.removeItem(item.getName());
         }
 
@@ -144,6 +146,8 @@ public class SprintManager implements Serializable {
             stmt.setInt(1, sprintID);
             stmt.setString(2, item.getName());
 
+            updateEffort(item, sprintID);
+
             return stmt.executeUpdate() > 0;
         }
         catch (SQLException sqe) {
@@ -152,6 +156,24 @@ public class SprintManager implements Serializable {
         }
 
         return false;
+    }
+
+    // Update effort
+    public void updateEffort(Item item, int sprintID) throws SQLException {
+        String query = """
+        UPDATE sprints
+        SET total_effort = total_effort + ?
+        WHERE sprint_id = ?
+        """;
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+
+            stmt.setFloat(1, item.getEffort());
+            stmt.setInt(2, sprintID);
+
+            stmt.executeUpdate();
+        }
     }
 
     // finish sprint

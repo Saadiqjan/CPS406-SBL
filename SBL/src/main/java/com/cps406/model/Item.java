@@ -40,7 +40,7 @@ public class Item implements Comparable<Item>, Serializable {
      * @param effort estimated effort required
      * @param risk estimated risk
      */
-    public Item(String name, String story, String task, int priority, float effort, float time, float risk) {
+    public Item(String name, String story, String task, int priority, float effort, float time, float risk, boolean complete) {
         // Store parameters
         this.name = name;
         this.story = story;
@@ -54,7 +54,7 @@ public class Item implements Comparable<Item>, Serializable {
         tasks = new ArrayList<>();
 
         // Set completion status
-        complete = false;
+        this.complete = complete;
         completionDay = null;
     }
 
@@ -66,7 +66,7 @@ public class Item implements Comparable<Item>, Serializable {
     public float getEffort() { return effort; }
     public float getTime() { return time; }
     public float getRisk() { return risk; }
-    public Integer getCompletionDay() { return completionDay;}
+    public Integer getCompletionDay() { return completionDay; }
 
     public ArrayList<Task> getTasks() { return tasks; }
     public boolean isComplete() {return complete;}

@@ -318,6 +318,7 @@ public class BacklogController extends BaseController {
             alert.showAndWait();
         }
     }
+
     private Item getItem() {
         // Retrieve contents of text fields and areas
         String name = reqField.getText().trim();
@@ -341,7 +342,7 @@ public class BacklogController extends BaseController {
         }
 
         // Create new item with the retrieved values
-        return new Item(name, story, task, priority, effort, time, risk);
+        return new Item(name, story, task, priority, effort, time, risk, false);
     }
 
     /**

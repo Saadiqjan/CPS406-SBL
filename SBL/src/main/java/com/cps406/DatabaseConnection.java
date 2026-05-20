@@ -28,7 +28,8 @@ public class DatabaseConnection {
                         priority INT,\
                         effort FLOAT,\
                         time_estimate FLOAT,\
-                        risk FLOAT\
+                        risk FLOAT,\
+                        complete INT DEFAULT 0\
                     )"""
             );
 
@@ -39,7 +40,9 @@ public class DatabaseConnection {
                      capacity INT,\
                      end_date TEXT NOT NULL,\
                      duration INT,\
-                     is_active INT DEFAULT 0\
+                     is_active INT DEFAULT 0,\
+                     total_effort FLOAT DEFAULT 0,\
+                     effort_completed FLOAT DEFAULT 0\
                  )"""
             );
 

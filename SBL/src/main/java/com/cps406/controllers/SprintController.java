@@ -8,7 +8,6 @@ package com.cps406.controllers;
 
 import com.cps406.AppState;
 import com.cps406.model.Item;
-import com.cps406.model.Storage;
 import com.cps406.model.Task;
 import javafx.animation.PauseTransition;
 import javafx.event.ActionEvent;
@@ -258,10 +257,7 @@ public class SprintController extends BaseController {
      */
     @FXML
     private void handleFinishSprint(ActionEvent event) {
-        appState.getSprintManager().finishSprint(appState.getProductBacklog());
-
-        // Save after finishing
-        Storage.save(appState.getProductBacklog());
+        appState.getSprintManager().finishSprint();
 
         // Show confirmation
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
