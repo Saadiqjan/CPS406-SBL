@@ -6,7 +6,10 @@
 
 package com.cps406.model;
 
+import com.cps406.DatabaseConnection;
+
 import java.io.Serial;
+import java.sql.*;
 import java.util.ArrayList;
 import java.io.Serializable;
 
@@ -40,7 +43,7 @@ public class Item implements Comparable<Item>, Serializable {
      * @param effort estimated effort required
      * @param risk estimated risk
      */
-    public Item(String name, String story, String task, int priority, float effort, float time, float risk, boolean complete) {
+    public Item(String name, String story, String task, int priority, float effort, float time, float risk, boolean complete, Integer completionDay) {
         // Store parameters
         this.name = name;
         this.story = story;
@@ -55,7 +58,7 @@ public class Item implements Comparable<Item>, Serializable {
 
         // Set completion status
         this.complete = complete;
-        completionDay = null;
+        this.completionDay = completionDay;
     }
 
     // Getters
@@ -72,13 +75,12 @@ public class Item implements Comparable<Item>, Serializable {
     public boolean isComplete() {return complete;}
 
     // Setters
-    public void setName(String newName) { name = newName; }
-    public void setStory(String newStory) { story = newStory; }
-    public void setTask(String newTask) { task = newTask; }
-    public void setPriority(int newPriority) { priority = newPriority; }
-    public void setEffort(float newEffort) { effort = newEffort; }
-    public void setTime(float newTime) { time = newTime; }
-    public void setRisk(float newRisk) { risk = newRisk; }
+    public void setStory(String newStory) { story = newStory; saveItem(); }
+    public void setTask(String newTask) { task = newTask; saveItem(); }
+    public void setPriority(int newPriority) { priority = newPriority; saveItem(); }
+    public void setEffort(float newEffort) { effort = newEffort; saveItem(); }
+    public void setTime(float newTime) { time = newTime; saveItem(); }
+    public void setRisk(float newRisk) { risk = newRisk; saveItem(); }
     public void setComplete(boolean complete, int day) {
         this.complete = complete;
 
@@ -88,7 +90,49 @@ public class Item implements Comparable<Item>, Serializable {
         else {
             this.completionDay = null;
         }
+
+        saveItem();
     }
+
+    public void saveItem() {
+        String query = """
+        UPDATE product_backlog
+        SET story = ?,
+            task = ?,
+            priority = ?,
+            effort = ?,
+            time_estimate = ?,
+            risk = ?,
+            complete = ?,
+            completion_day = ?
+        WHERE item_name = ?
+        """;
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+
+            stmt.setString(1, getStory());
+            stmt.setString(2, getTask());
+            stmt.setInt(3, getPriority());
+            stmt.setFloat(4, getEffort());
+            stmt.setFloat(5, getTime());
+            stmt.setFloat(6, getRisk());
+            stmt.setInt(7, complete ? 1 : 0);
+            stmt.setInt(8, completionDay);
+
+            stmt.setString(9, getName());
+
+            stmt.executeUpdate();
+        }
+        catch (SQLException sqe) {
+
+        }
+    }
+
+    public void setName(String newName) {
+
+    }
+
     // Add a task
     public void addTask(Task task) {
         tasks.add(task);

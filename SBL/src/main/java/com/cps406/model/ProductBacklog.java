@@ -46,7 +46,8 @@ public class ProductBacklog implements Serializable {
                         rs.getFloat("effort"),
                         rs.getFloat("time_estimate"),
                         rs.getFloat("risk"),
-                        rs.getInt("complete") != 0
+                        rs.getInt("complete") != 0,
+                        rs.getInt("completion_day")
                 );
 
                 items.add(item);
@@ -131,7 +132,8 @@ public class ProductBacklog implements Serializable {
                         rs.getInt("effort"),
                         rs.getInt("time_estimate"),
                         rs.getInt("risk"),
-                        rs.getInt("complete") != 0
+                        rs.getInt("complete") != 0,
+                        rs.getInt("completion_day")
                 );
             }
         }

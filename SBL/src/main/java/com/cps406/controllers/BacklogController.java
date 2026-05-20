@@ -342,7 +342,7 @@ public class BacklogController extends BaseController {
         }
 
         // Create new item with the retrieved values
-        return new Item(name, story, task, priority, effort, time, risk, false);
+        return new Item(name, story, task, priority, effort, time, risk, false, null);
     }
 
     /**

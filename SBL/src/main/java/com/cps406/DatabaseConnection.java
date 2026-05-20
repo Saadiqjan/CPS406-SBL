@@ -29,7 +29,8 @@ public class DatabaseConnection {
                         effort FLOAT,\
                         time_estimate FLOAT,\
                         risk FLOAT,\
-                        complete INT DEFAULT 0\
+                        complete INT DEFAULT 0,\
+                        completion_day INT\
                     )"""
             );
 
