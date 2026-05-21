@@ -59,6 +59,20 @@ public class DatabaseConnection {
                     FOREIGN KEY (item_name) REFERENCES product_backlog(item_name)\
                 )"""
             );
+
+            stmt.execute(
+                """
+                CREATE TABLE IF NOT EXISTS tasks (\
+                    task_id INTEGER PRIMARY KEY AUTOINCREMENT,\
+                    item_name TEXT NOT NULL,\
+                    description TEXT,\
+                    priority INT,\
+                    effort FLOAT,\
+                    time_estimate FLOAT,\
+                    complete INT DEFAULT 0,\
+                    FOREIGN KEY (item_name) REFERENCES product_backlog(item_name) ON DELETE CASCADE\
+                )"""
+            );
         }
         catch (SQLException sqe) {
             Logger.getLogger(Main.class.getName())

@@ -7,11 +7,14 @@
 package com.cps406.model;
 
 import com.cps406.DatabaseConnection;
+import com.cps406.Main;
 
 import java.io.Serial;
 import java.sql.*;
 import java.util.ArrayList;
 import java.io.Serializable;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Item implements Comparable<Item>, Serializable {
     @Serial
@@ -29,9 +32,6 @@ public class Item implements Comparable<Item>, Serializable {
 
     // Store item status
     private boolean complete;
-
-    // Store related engineering tasks
-    private ArrayList<Task> tasks;
 
     /**
      * Create a new item
@@ -53,9 +53,6 @@ public class Item implements Comparable<Item>, Serializable {
         this.time = time;
         this.risk = risk;
 
-        // Set up list of engineering tasks related to the item
-        tasks = new ArrayList<>();
-
         // Set completion status
         this.complete = complete;
         this.completionDay = completionDay;
@@ -71,7 +68,6 @@ public class Item implements Comparable<Item>, Serializable {
     public float getRisk() { return risk; }
     public Integer getCompletionDay() { return completionDay; }
 
-    public ArrayList<Task> getTasks() { return tasks; }
     public boolean isComplete() {return complete;}
 
     // Setters
@@ -92,6 +88,41 @@ public class Item implements Comparable<Item>, Serializable {
         }
 
         saveItem();
+    }
+
+    public ArrayList<Task> getTasks() {
+        ArrayList<Task> tasks = new ArrayList<>();
+
+        String query = """
+        SELECT * FROM tasks
+        WHERE item_name = ?
+        """;
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+
+            stmt.setString(1, getName());
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                tasks.add(
+                        new Task(
+                                rs.getInt("task_id"),
+                                rs.getString("description"),
+                                rs.getInt("priority"),
+                                rs.getFloat("effort"),
+                                rs.getFloat("time_estimate"),
+                                rs.getInt("complete") != 0
+                        )
+                );
+            }
+        }
+        catch (SQLException sqe) {
+            Logger.getLogger(Main.class.getName())
+                    .log(Level.SEVERE, "SQL Execution Failed", sqe);
+        }
+
+        return tasks;
     }
 
     public void saveItem() {
@@ -125,7 +156,8 @@ public class Item implements Comparable<Item>, Serializable {
             stmt.executeUpdate();
         }
         catch (SQLException sqe) {
-
+            Logger.getLogger(Main.class.getName())
+                    .log(Level.SEVERE, "SQL Execution Failed", sqe);
         }
     }
 
@@ -135,11 +167,32 @@ public class Item implements Comparable<Item>, Serializable {
 
     // Add a task
     public void addTask(Task task) {
-        tasks.add(task);
+
+        String query = """
+        INSERT INTO tasks
+        (item_name, description, priority,
+         effort, time_estimate, complete)
+        VALUES (?, ?, ?, ?, ?, ?)
+        """;
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+
+            stmt.setString(1, getName());
+            stmt.setString(2, task.getDescription());
+            stmt.setInt(3, task.getPriority());
+            stmt.setFloat(4, task.getEffort());
+            stmt.setFloat(5, task.getTime());
+            stmt.setInt(6, task.isComplete() ? 1 : 0);
+        }
+        catch (SQLException sqe) {
+            Logger.getLogger(Main.class.getName())
+                    .log(Level.SEVERE, "SQL Execution Failed", sqe);
+        }
     }
 
     public void setTaskComplete(boolean value, Task task) {
-        task.setComplete(value);
+        task.setComplete(value, getName());
     }
 
     /**
@@ -148,17 +201,12 @@ public class Item implements Comparable<Item>, Serializable {
      * @return the Task if found, null otherwise
      */
     public Task getTask(int id) {
-        for (Task task : tasks) {
+        for (Task task : getTasks()) {
             if (task.getID() == id) {
                 return task;
             }
         }
         return null; // task not found
-    }
-
-    // Remove task by task name
-    public void removeTask(int id) {
-        tasks.removeIf(task -> task.getID() == id);
     }
 
     @Override

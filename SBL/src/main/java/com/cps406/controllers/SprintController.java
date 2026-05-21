@@ -359,7 +359,7 @@ public class SprintController extends BaseController {
             }
 
             // Create new task
-            Task newTask = new Task(description, priority, effort, time);
+            Task newTask = new Task(description, priority, effort, time, false);
 
             // Add task to the sprint item
             item.addTask(newTask);

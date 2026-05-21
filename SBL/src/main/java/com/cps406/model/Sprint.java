@@ -75,17 +75,17 @@ public class Sprint implements Serializable {
             while (rs.next()) {
 
                 Item item =
-                        new Item(
-                                rs.getString("item_name"),
-                                rs.getString("story"),
-                                rs.getString("task"),
-                                rs.getInt("priority"),
-                                rs.getFloat("effort"),
-                                rs.getFloat("time_estimate"),
-                                rs.getFloat("risk"),
-                                rs.getInt("complete") != 0,
-                                rs.getInt("completion_day")
-                        );
+                    new Item(
+                            rs.getString("item_name"),
+                            rs.getString("story"),
+                            rs.getString("task"),
+                            rs.getInt("priority"),
+                            rs.getFloat("effort"),
+                            rs.getFloat("time_estimate"),
+                            rs.getFloat("risk"),
+                            rs.getInt("complete") != 0,
+                            rs.getInt("completion_day")
+                    );
 
                 items.add(item);
             }
