@@ -64,6 +64,8 @@ public class Task implements Serializable {
     public boolean isComplete() { return complete; }
 
     public void setComplete(boolean value, String itemName) {
+        complete = value;
+
         String query = "UPDATE tasks SET complete = ? WHERE item_name = ?";
 
         try (Connection conn = DatabaseConnection.getConnection();
