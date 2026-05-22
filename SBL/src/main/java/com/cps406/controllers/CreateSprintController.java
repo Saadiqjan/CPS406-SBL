@@ -87,7 +87,7 @@ public class CreateSprintController extends BaseController {
 
     //Store table lists
     ObservableList<Item> pbItems = FXCollections.observableArrayList();
-    ObservableList<Item> sbItems    = FXCollections.observableArrayList();
+    ObservableList<Item> sbItems = FXCollections.observableArrayList();
 
     /**
      * Initializes tables, column bindings, button cells, and input listeners.
@@ -208,7 +208,9 @@ public class CreateSprintController extends BaseController {
     private void addToSprint(Item item) {
         // Prevent removing an item that isn't there
         // If remove fails and add doesn't it will lead to the creation or duplication of an item
-        if (!pbItems.contains(item)) return;
+        if (!pbItems.contains(item)) {
+            return;
+        }
 
         // Move the item
         pbItems.remove(item);
@@ -248,8 +250,7 @@ public class CreateSprintController extends BaseController {
 
         // Move generated items from PB to sprint
         sprintList.forEach(item -> {
-            pbItems.remove(item);
-            sbItems.add(item);
+            addToSprint(item);
         });
 
         // Update capacity label
@@ -279,8 +280,6 @@ public class CreateSprintController extends BaseController {
             // Create a new sprint
             // If the creation was successful, switch to the sprint scene
             if (sm.createSprint(capacity, LocalDate.now().plusWeeks(duration), duration, appState.getProductBacklog(), selectedItems)) {
-                appState.saveCurSprint();
-                appState.saveBacklog();
                 goToSprint(event);
             }
         }

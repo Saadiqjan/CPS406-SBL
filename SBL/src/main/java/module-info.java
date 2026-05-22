@@ -1,4 +1,5 @@
 module cps406.sbl {
+    requires java.sql;
     requires javafx.controls;
     requires javafx.fxml;
     requires javafx.web;

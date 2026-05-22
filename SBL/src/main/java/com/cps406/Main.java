@@ -32,6 +32,9 @@ public class Main extends Application {
         // This will act as a wrapper that contains the sprint manager and the product backlog
         AppState appState = new AppState();
 
+        // initialize database
+        DatabaseConnection.initialize();
+
         // Load entry scene
         FXMLLoader loader = new FXMLLoader(getClass().getResource("Enter.fxml"));
         Parent root = loader.load();
@@ -42,10 +45,6 @@ public class Main extends Application {
 
         EnterController ec = loader.getController();
         ec.setAppState(appState);
-
-        // Get the controller for the dashboard scene and set its app state
-        //DashboardController dbc = loader.getController();
-        //dbc.setAppState(appState);
 
         // Set the scene
         stage.setScene(scene);

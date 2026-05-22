@@ -11,6 +11,7 @@ import java.io.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+@Deprecated
 public class Storage {
 
     private static final String FILE_NAME = "backlog.dat";

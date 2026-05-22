@@ -6,26 +6,23 @@
 
 package com.cps406.model;
 
-import java.io.Serial;
-import java.io.Serializable;
+import com.cps406.DatabaseConnection;
+import com.cps406.Main;
+
+import java.sql.*;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-public class Sprint implements Serializable {
-    @Serial
-    private static final long serialVersionUID = 1L;
-    // Store the total number of sprints that have occured
-    private static int totalSprints = 0;
+public class Sprint {
 
     // Store current sprint number, capacity, start and end dates, and status
-    private final int curSprint;
+    private final int sprintID;
     private final int capacity;
     private final LocalDate end;
     private final LocalDate start;
-
-    // Store the items in the sprint
-    private ArrayList<Item> items;
 
     // Store progress
 
@@ -38,10 +35,9 @@ public class Sprint implements Serializable {
      * @param capacity of the sprint
      * @param end date of the sprint
      */
-    public Sprint(int capacity, LocalDate end, int duration) {
+    public Sprint(int sprintID, int capacity, LocalDate end, int duration, float totalEffort, float effortCompleted) {
         // Set current sprint and increase total sprint count
-        totalSprints++;
-        curSprint = totalSprints;
+        this.sprintID = sprintID;
 
         // Store parameters
         // Start is set to current date
@@ -49,13 +45,55 @@ public class Sprint implements Serializable {
         start = LocalDate.now();
         this.end = end;
 
+        this.totalEffort = totalEffort;
+        this.effortCompleted = effortCompleted;
         totalDays = duration * 7;
-        items = new ArrayList<>();
     }
 
     // Get items
     public ArrayList<Item> getItems() {
+        ArrayList<Item> items = new ArrayList<>();
+
+        String query = """
+        SELECT pb.*
+        FROM product_backlog pb
+        JOIN sprint_items si ON pb.item_name = si.item_name
+        JOIN sprints s ON s.sprint_id = si.sprint_id
+        WHERE s.is_active = 1;
+        """;
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query);
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+
+                Item item =
+                    new Item(
+                            rs.getString("item_name"),
+                            rs.getString("story"),
+                            rs.getString("task"),
+                            rs.getInt("priority"),
+                            rs.getFloat("effort"),
+                            rs.getFloat("time_estimate"),
+                            rs.getFloat("risk"),
+                            rs.getInt("complete") != 0,
+                            rs.getInt("completion_day")
+                    );
+
+                items.add(item);
+            }
+        }
+        catch (SQLException sqe) {
+            Logger.getLogger(Main.class.getName())
+                    .log(Level.SEVERE, "SQL Execution Failed", sqe);
+        }
+
         return items;
+    }
+
+    public int getID() {
+        return sprintID;
     }
 
     public int getTotalDays() {
@@ -66,33 +104,34 @@ public class Sprint implements Serializable {
         return totalEffort;
     }
 
-    public boolean addItem(Item item) {
-        if (items.add(item)) {
-            totalEffort += item.getEffort();
-            return true;
-        }
-
-        return false;
-    }
-
-    public boolean removeItem(Item item) {
-        if (items.remove(item)) {
-            totalEffort -= item.getEffort();
-            return true;
-        }
-
-        return false;
-    }
-
     public void completeItem(boolean completion, Item item) {
         if (completion && !item.isComplete()) {
-            effortCompleted += item.getEffort();
+            updateEffortCompleted(item.getEffort());
         }
         else if (!completion && item.isComplete()) {
-            effortCompleted -= item.getEffort();
+            updateEffortCompleted(item.getEffort() * -1);
         }
 
         item.setComplete(completion, getCurrentDay());
+    }
+
+    public void updateEffortCompleted(float effort) {
+        String query = """
+        UPDATE sprints
+        SET effort_completed = effort_completed + ?
+        WHERE sprint_id = ?
+        """;
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+            pstmt.setFloat(1, effort);
+            pstmt.setInt(2, sprintID);
+
+            pstmt.executeUpdate();
+        }
+        catch (SQLException sqe) {
+
+        }
     }
 
     // Calculate Progess
@@ -103,7 +142,7 @@ public class Sprint implements Serializable {
     public float getRemEffort() {
         float remEffort = 0.0f;
 
-        for (Item item: items) {
+        for (Item item: getItems()) {
             if (!item.isComplete()) {
                 remEffort += item.getEffort();
             }
@@ -115,7 +154,7 @@ public class Sprint implements Serializable {
     public float getRemTime() {
         float remTime = 0.0f;
 
-        for (Item item: items) {
+        for (Item item: getItems()) {
             if (!item.isComplete()) {
                 remTime += item.getTime();
             }
@@ -126,10 +165,6 @@ public class Sprint implements Serializable {
 
     public int getCurrentDay() {
         return (int) ChronoUnit.DAYS.between(start, LocalDate.now());
-    }
-
-    public int getCurSprint() {
-        return curSprint;
     }
 
     public int getCapacity() {

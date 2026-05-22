@@ -6,13 +6,15 @@
 
 package com.cps406.model;
 
-import java.io.Serial;
-import java.util.ArrayList;
-import java.io.Serializable;
+import com.cps406.DatabaseConnection;
+import com.cps406.Main;
 
-public class Item implements Comparable<Item>, Serializable {
-    @Serial
-    private static final long serialVersionUID = 1L;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+public class Item implements Comparable<Item> {
 
     // Store item details
     private String name;
@@ -27,9 +29,6 @@ public class Item implements Comparable<Item>, Serializable {
     // Store item status
     private boolean complete;
 
-    // Store related engineering tasks
-    private ArrayList<Task> tasks;
-
     /**
      * Create a new item
      *
@@ -40,7 +39,7 @@ public class Item implements Comparable<Item>, Serializable {
      * @param effort estimated effort required
      * @param risk estimated risk
      */
-    public Item(String name, String story, String task, int priority, float effort, float time, float risk) {
+    public Item(String name, String story, String task, int priority, float effort, float time, float risk, boolean complete, Integer completionDay) {
         // Store parameters
         this.name = name;
         this.story = story;
@@ -50,12 +49,9 @@ public class Item implements Comparable<Item>, Serializable {
         this.time = time;
         this.risk = risk;
 
-        // Set up list of engineering tasks related to the item
-        tasks = new ArrayList<>();
-
         // Set completion status
-        complete = false;
-        completionDay = null;
+        this.complete = complete;
+        this.completionDay = completionDay;
     }
 
     // Getters
@@ -66,19 +62,17 @@ public class Item implements Comparable<Item>, Serializable {
     public float getEffort() { return effort; }
     public float getTime() { return time; }
     public float getRisk() { return risk; }
-    public Integer getCompletionDay() { return completionDay;}
+    public Integer getCompletionDay() { return completionDay; }
 
-    public ArrayList<Task> getTasks() { return tasks; }
     public boolean isComplete() {return complete;}
 
     // Setters
-    public void setName(String newName) { name = newName; }
-    public void setStory(String newStory) { story = newStory; }
-    public void setTask(String newTask) { task = newTask; }
-    public void setPriority(int newPriority) { priority = newPriority; }
-    public void setEffort(float newEffort) { effort = newEffort; }
-    public void setTime(float newTime) { time = newTime; }
-    public void setRisk(float newRisk) { risk = newRisk; }
+    public void setStory(String newStory) { story = newStory; saveItem(); }
+    public void setTask(String newTask) { task = newTask; saveItem(); }
+    public void setPriority(int newPriority) { priority = newPriority; saveItem(); }
+    public void setEffort(float newEffort) { effort = newEffort; saveItem(); }
+    public void setTime(float newTime) { time = newTime; saveItem(); }
+    public void setRisk(float newRisk) { risk = newRisk; saveItem(); }
     public void setComplete(boolean complete, int day) {
         this.complete = complete;
 
@@ -88,14 +82,119 @@ public class Item implements Comparable<Item>, Serializable {
         else {
             this.completionDay = null;
         }
+
+        saveItem();
     }
+
+    public ArrayList<Task> getTasks() {
+        ArrayList<Task> tasks = new ArrayList<>();
+
+        String query = """
+        SELECT * FROM tasks
+        WHERE item_name = ?
+        """;
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+
+            stmt.setString(1, getName());
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                tasks.add(
+                        new Task(
+                                rs.getInt("task_id"),
+                                rs.getString("description"),
+                                rs.getInt("priority"),
+                                rs.getFloat("effort"),
+                                rs.getFloat("time_estimate"),
+                                rs.getInt("complete") != 0
+                        )
+                );
+            }
+        }
+        catch (SQLException sqe) {
+            Logger.getLogger(Main.class.getName())
+                    .log(Level.SEVERE, "SQL Execution Failed", sqe);
+        }
+
+        return tasks;
+    }
+
+    public void saveItem() {
+        String query = """
+        UPDATE product_backlog
+        SET story = ?,
+            task = ?,
+            priority = ?,
+            effort = ?,
+            time_estimate = ?,
+            risk = ?,
+            complete = ?,
+            completion_day = ?
+        WHERE item_name = ?
+        """;
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+
+            stmt.setString(1, getStory());
+            stmt.setString(2, getTask());
+            stmt.setInt(3, getPriority());
+            stmt.setFloat(4, getEffort());
+            stmt.setFloat(5, getTime());
+            stmt.setFloat(6, getRisk());
+            stmt.setInt(7, complete ? 1 : 0);
+            if (completionDay == null) {
+                stmt.setNull(1, Types.INTEGER);
+            } else {
+                stmt.setInt(1, priority);
+            }
+
+            stmt.setString(9, getName());
+
+            stmt.executeUpdate();
+        }
+        catch (SQLException sqe) {
+            Logger.getLogger(Main.class.getName())
+                    .log(Level.SEVERE, "SQL Execution Failed", sqe);
+        }
+    }
+
+    public void setName(String newName) {
+
+    }
+
     // Add a task
     public void addTask(Task task) {
-        tasks.add(task);
+
+        String query = """
+        INSERT INTO tasks
+        (item_name, description, priority,
+         effort, time_estimate, complete)
+        VALUES (?, ?, ?, ?, ?, ?)
+        """;
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+
+            stmt.setString(1, getName());
+            stmt.setString(2, task.getDescription());
+            stmt.setInt(3, task.getPriority());
+            stmt.setFloat(4, task.getEffort());
+            stmt.setFloat(5, task.getTime());
+            stmt.setInt(6, task.isComplete() ? 1 : 0);
+
+            stmt.execute();
+        }
+        catch (SQLException sqe) {
+            Logger.getLogger(Main.class.getName())
+                    .log(Level.SEVERE, "SQL Execution Failed", sqe);
+        }
     }
 
     public void setTaskComplete(boolean value, Task task) {
-        task.setComplete(value);
+        task.setComplete(value, getName());
     }
 
     /**
@@ -104,7 +203,7 @@ public class Item implements Comparable<Item>, Serializable {
      * @return the Task if found, null otherwise
      */
     public Task getTask(int id) {
-        for (Task task : tasks) {
+        for (Task task : getTasks()) {
             if (task.getID() == id) {
                 return task;
             }
@@ -112,14 +211,28 @@ public class Item implements Comparable<Item>, Serializable {
         return null; // task not found
     }
 
-    // Remove task by task name
-    public void removeTask(int id) {
-        tasks.removeIf(task -> task.getID() == id);
-    }
-
     @Override
     public int compareTo(Item o) {
         return o.getPriority() - this.priority;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+
+        if (obj.getClass() != this.getClass()) {
+            return false;
+        }
+
+        Item i = (Item) obj;
+
+        if (i.getName().equals(getName())) {
+            return true;
+        }
+
+        return false;
     }
 }
 

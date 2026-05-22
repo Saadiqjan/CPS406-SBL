@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+@Deprecated
 public class SprintStorage {
 
     private static final String PREV_FILE = "prev_sprints.dat";

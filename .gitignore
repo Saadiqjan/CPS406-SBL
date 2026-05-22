@@ -53,6 +53,7 @@ SBL/target/
 # ===========================
 # Data files
 # ===========================
+app.db
 backlog.dat
 sprint.dat
 cur_sprint.dat
