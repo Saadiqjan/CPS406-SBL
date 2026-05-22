@@ -184,6 +184,8 @@ public class Item implements Comparable<Item>, Serializable {
             stmt.setFloat(4, task.getEffort());
             stmt.setFloat(5, task.getTime());
             stmt.setInt(6, task.isComplete() ? 1 : 0);
+
+            stmt.execute();
         }
         catch (SQLException sqe) {
             Logger.getLogger(Main.class.getName())
@@ -212,6 +214,25 @@ public class Item implements Comparable<Item>, Serializable {
     @Override
     public int compareTo(Item o) {
         return o.getPriority() - this.priority;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+
+        if (obj.getClass() != this.getClass()) {
+            return false;
+        }
+
+        Item i = (Item) obj;
+
+        if (i.getName().equals(getName())) {
+            return true;
+        }
+
+        return false;
     }
 }
 
