@@ -85,13 +85,14 @@ public class SprintManager implements Serializable {
 
     // check if sprint is active
     public boolean isActiveSprint() {
-        String query = "SELECT EXISTS(SELECT 1 FROM sprints WHERE is_active = 1)";
+        String query = "SELECT COUNT(*) FROM sprints WHERE is_active = 1;";
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(query);
              ResultSet rs = stmt.executeQuery()) {
 
-            return rs.next() && rs.getBoolean(1);
+             rs.next();
+             return rs.getInt(1) > 0;
         } catch (SQLException sqe) {
             Logger.getLogger(Main.class.getName())
                     .log(Level.SEVERE, "SQL Execution Failed", sqe);
@@ -116,6 +117,8 @@ public class SprintManager implements Serializable {
             pstmt.setString(2, endDate.toString());
             pstmt.setInt(3, duration);
             pstmt.setInt(4, 1);
+
+            pstmt.execute();
         }
         catch (SQLException sqe) {
             Logger.getLogger(Main.class.getName())
@@ -126,8 +129,6 @@ public class SprintManager implements Serializable {
 
         for (Item item : selectedItems) {
             addSprintItem(item, getCurSprint().getID());
-
-            backlog.removeItem(item.getName());
         }
 
         return true;
@@ -182,14 +183,14 @@ public class SprintManager implements Serializable {
 
         String query = """
         UPDATE sprints
-        SET is_active = 0,
+        SET is_active = 0
         WHERE sprint_id = ?
         """;
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
 
-            stmt.setInt(2, getCurSprint().getID());
+            stmt.setInt(1, getCurSprint().getID());
 
             stmt.executeUpdate();
         }

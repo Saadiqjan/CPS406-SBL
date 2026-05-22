@@ -31,7 +31,7 @@ public class ProductBacklog implements Serializable {
     public ArrayList<Item> getBacklog() {
         ArrayList<Item> items = new ArrayList<>();
 
-        String query = "SELECT * FROM product_backlog";
+        String query = "SELECT * FROM product_backlog WHERE complete = 0";
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(query);
@@ -41,7 +41,7 @@ public class ProductBacklog implements Serializable {
                 Item item = new Item(
                         rs.getString("item_name"),
                         rs.getString("story"),
-                        rs.getString("description"),
+                        rs.getString("task"),
                         rs.getInt("priority"),
                         rs.getFloat("effort"),
                         rs.getFloat("time_estimate"),
@@ -81,14 +81,21 @@ public class ProductBacklog implements Serializable {
             pstmt.setFloat(6, newItem.getTime());
             pstmt.setFloat(7, newItem.getRisk());
 
-            pstmt.executeQuery();
+            int rows = pstmt.executeUpdate();
+
+            if (rows == 0) {
+                System.out.println("Duplicate item name");
+                return false;
+            }
+
+            return true;
         }
         catch (SQLException sqe) {
             Logger.getLogger(Main.class.getName())
                     .log(Level.SEVERE, "SQL Execution Failed", sqe);
         }
 
-        return true;
+        return false;
     }
 
     // Remove item by name

@@ -107,7 +107,6 @@ public class SprintController extends BaseController {
                 checkBox.setOnAction(event -> {
                     Task task = getTableView().getItems().get(getIndex());
                     sprintTable.getSelectionModel().getSelectedItem().setTaskComplete(checkBox.isSelected(), task);
-                    appState.saveCurSprint();
                     taskTable.refresh();
                 });
             }
@@ -219,8 +218,6 @@ public class SprintController extends BaseController {
                     appState.getSprintManager().getCurSprint().completeItem(checkBox.isSelected(), item);
 
                     // Save and refresh
-                    //appState.saveBacklog();
-                    appState.saveCurSprint();
                     sprintTable.refresh();
                 });
             }
@@ -368,7 +365,6 @@ public class SprintController extends BaseController {
             taskTable.getItems().add(newTask);
 
             // Save the sprint and close popup window
-            appState.saveCurSprint();
             popupStage.close();
         });
 

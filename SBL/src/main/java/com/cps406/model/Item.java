@@ -149,7 +149,11 @@ public class Item implements Comparable<Item>, Serializable {
             stmt.setFloat(5, getTime());
             stmt.setFloat(6, getRisk());
             stmt.setInt(7, complete ? 1 : 0);
-            stmt.setInt(8, completionDay);
+            if (completionDay == null) {
+                stmt.setNull(1, Types.INTEGER);
+            } else {
+                stmt.setInt(1, priority);
+            }
 
             stmt.setString(9, getName());
 

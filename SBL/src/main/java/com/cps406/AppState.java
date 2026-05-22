@@ -25,19 +25,7 @@ public class AppState {
     public AppState() {
         // initialize sprint manager which loads the current sprint automatically
         sprintManager = new SprintManager();
-
-        // load product backlog
-        productBacklog = Storage.load();
-    }
-
-    // Save the backlog
-    public void saveBacklog() { Storage.save(productBacklog); }
-
-    // save current sprint
-    public void saveCurSprint() {
-        if (sprintManager.getCurSprint() != null) {
-            //sprintManager.setCurSprint(sprintManager.getCurSprint());
-        }
+        productBacklog = new ProductBacklog();
     }
 
     // Getters

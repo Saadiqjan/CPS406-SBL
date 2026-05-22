@@ -59,13 +59,11 @@ public class Sprint implements Serializable {
         ArrayList<Item> items = new ArrayList<>();
 
         String query = """
-        SELECT pb.*, si.completed, si.completed_day
-        FROM sprint_items si
-        JOIN product_backlog pb
-            ON si.item_name = pb.item_name
-        JOIN sprints s
-            ON si.sprint_id = s.sprint_id
-        WHERE s.is_active = 1
+        SELECT pb.*
+        FROM product_backlog pb
+        JOIN sprint_items si ON pb.item_name = si.item_name
+        JOIN sprints s ON s.sprint_id = si.sprint_id
+        WHERE s.is_active = 1;
         """;
 
         try (Connection conn = DatabaseConnection.getConnection();
