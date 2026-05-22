@@ -11,6 +11,7 @@ import java.io.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+@Deprecated
 public class Storage {
 
     private static final String FILE_NAME = "backlog.dat";
@@ -27,22 +28,22 @@ public class Storage {
         }
     }
 
-//    public static ProductBacklog load() {
-//        File file = new File(FILE_NAME);
-//
-//        if (!file.exists()) {
-//            return new ProductBacklog();
-//        }
-//
-//        try (ObjectInputStream in =
-//                     new ObjectInputStream(new FileInputStream(file))) {
-//            return (ProductBacklog) in.readObject();
-//
-//        } catch (IOException | ClassNotFoundException e) {
-//            Logger.getLogger(Main.class.getName())
-//                    .log(Level.SEVERE, "Failed to load product backlog", e);
-//            return new ProductBacklog();
-//        }
-//    }
+    public static ProductBacklog load() {
+        File file = new File(FILE_NAME);
+
+        if (!file.exists()) {
+            return new ProductBacklog();
+        }
+
+        try (ObjectInputStream in =
+                     new ObjectInputStream(new FileInputStream(file))) {
+            return (ProductBacklog) in.readObject();
+
+        } catch (IOException | ClassNotFoundException e) {
+            Logger.getLogger(Main.class.getName())
+                    .log(Level.SEVERE, "Failed to load product backlog", e);
+            return new ProductBacklog();
+        }
+    }
 }
 
