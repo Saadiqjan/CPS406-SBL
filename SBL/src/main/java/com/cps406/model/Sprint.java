@@ -9,8 +9,6 @@ package com.cps406.model;
 import com.cps406.DatabaseConnection;
 import com.cps406.Main;
 
-import java.io.Serial;
-import java.io.Serializable;
 import java.sql.*;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -18,9 +16,7 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class Sprint implements Serializable {
-    @Serial
-    private static final long serialVersionUID = 1L;
+public class Sprint {
 
     // Store current sprint number, capacity, start and end dates, and status
     private final int sprintID;

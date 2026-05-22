@@ -9,16 +9,12 @@ package com.cps406.model;
 import com.cps406.DatabaseConnection;
 import com.cps406.Main;
 
-import java.io.Serial;
 import java.sql.*;
 import java.util.ArrayList;
-import java.io.Serializable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class ProductBacklog implements Serializable {
-    @Serial
-    private static final long serialVersionUID = 1L;
+public class ProductBacklog {
 
     /**
      * Create new product backlog

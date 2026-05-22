@@ -10,8 +10,6 @@ package com.cps406.model;
 import com.cps406.DatabaseConnection;
 import com.cps406.Main;
 
-import java.io.Serial;
-import java.io.Serializable;
 import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -19,8 +17,7 @@ import java.util.Collections;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class SprintManager implements Serializable {
-    @Serial
+public class SprintManager {
     private static final long serialVersionUID = 1L;
 
     public SprintManager() {

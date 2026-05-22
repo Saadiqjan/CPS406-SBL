@@ -9,15 +9,11 @@ package com.cps406.model;
 import com.cps406.DatabaseConnection;
 import com.cps406.Main;
 
-import java.io.Serial;
-import java.io.Serializable;
 import java.sql.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class Task implements Serializable {
-    @Serial
-    private static final long serialVersionUID = 1L;
+public class Task {
     private static int nextId = 1;
 
     // Store task details
